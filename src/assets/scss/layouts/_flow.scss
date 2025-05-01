@@ -1,0 +1,22 @@
+/* =====================================
+Flow content
+Generates margins between child elements
+======================================== */
+.flow:not(.flex) > *:not(.hide-a11y) + * {
+  margin-block-start: var(--flow-gap, var(--space-1));
+}
+
+.flow > h4 + *,
+.flow > h5 + *,
+.flow > .t-h4 + *,
+.flow > .t-h5 + * {
+  margin-block-start: var(--flow-gap, var(--space-2));
+}
+
+.flow:not(.flow-full) > p {
+  max-width: 52.6875rem; // 843px;
+}
+
+.flow > p.ts-body-large {
+  max-width: 39.0625rem; // 625px;
+}

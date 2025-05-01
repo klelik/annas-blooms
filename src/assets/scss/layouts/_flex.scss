@@ -1,0 +1,44 @@
+/* ==========================
+Simple Flexbox Layout
+============================= */
+.flex {
+  display: flex;
+  gap: var(--flex-gap, var(--space-3));
+  justify-content: var(--flex-align-horizontal, flex-start);
+  align-items: var(--flex-align-vertical, center);
+}
+
+.flex[data-dir='rtl'] {
+  flex-direction: row-reverse;
+}
+
+.flex[data-center] {
+  justify-content: var(--flex-align-horizontal, center);
+  align-items: center;
+}
+
+.flex[data-repel] {
+  flex: auto;
+  justify-content: var(--flex-align-horizontal, space-between);
+}
+
+.flex[data-space] {
+  flex: auto;
+  justify-content: space-around;
+}
+
+.flex[data-column] {
+  flex-direction: column;
+}
+
+.flex[data-row] {
+  flex-direction: row;
+}
+
+.flex[data-wrap] {
+  flex-wrap: wrap;
+}
+
+.flex[data-start] {
+  align-items: flex-start;
+}

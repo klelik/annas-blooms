@@ -1,0 +1,26 @@
+/* ==========================
+Font tokens
+============================= */
+@import url('https://api.fontshare.com/v2/css?f[]=synonym@500&f[]=chillax@500,600,700&display=swap');
+
+$tokens: (
+  'headline': "'Chillax', sans-serif",
+  'primary': "'Synonym', sans-serif"
+);
+
+$vars: createCssVars($tokens, 'font');
+
+/* ==========================
+Font tokens to CSS variables
+============================= */
+@include tokensToVars($vars);
+
+/* ==========================
+Font utility classes
+============================= */
+@include tokensToUtils($tokens, $vars, 'font', 'font-family');
+
+/* Additional utility class */
+.font-underline {
+  text-decoration: underline;
+}

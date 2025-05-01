@@ -1,0 +1,62 @@
+/* ==========================
+Auto grid layout
+
+CSS overrides:
+--grid-max-cols
+--grid-placement
+============================= */
+.grid {
+  /* rather than try to calculate all the gutter space, use the next col size up */
+  --cols: calc(var(--grid-max-cols, 3) + 1);
+  --min: calc(var(--wrapper-width, 100%) / (var(--cols)));
+  --max: calc(var(--wrapper-width, 100%) / (var(--cols) + 1));
+  display: grid;
+  gap: var(--grid-gap, var(--space-2-3));
+  grid-template-columns: repeat(var(--grid-max-cols, 3), 1fr);
+  grid-auto-rows: max-content;
+  display: grid;
+}
+
+.grid[data-layout-mode='grid'] > .card:nth-child(3n + 1) {
+  --card-index: 0;
+}
+
+.grid[data-layout-mode='grid'] > .card:nth-child(3n + 2) {
+  --card-index: 1;
+}
+
+.grid[data-layout-mode='grid'] > .card:nth-child(3n + 3) {
+  --card-index: 2;
+}
+
+@media screen and (min-width: 30.0625rem) and (max-width: 66.25rem) {
+  .grid {
+    grid-template-columns: repeat(max(calc(var(--grid-max-cols, 3) - 1), 1), 1fr);
+  }
+
+  .grid > .card:nth-child(2n + 1) {
+    --card-index: 0;
+  }
+
+  .grid > .card:nth-child(2n + 2) {
+    --card-index: 1;
+  }
+}
+
+@media screen and (max-width: 38rem) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .grid .card {
+    --card-index: 0;
+  }
+}
+
+.grid-span-last > *:last-child {
+  grid-column: 1 / -1;
+}
+
+.grid-max-cols-2 {
+  --grid-max-cols: 2;
+}

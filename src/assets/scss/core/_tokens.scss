@@ -1,0 +1,35 @@
+@use 'sass:math';
+@use 'sass:list';
+@use 'sass:map';
+
+@function createCssVars($tokens, $prefix) {
+  $tokenMap: ();
+  @each $token, $val in $tokens {
+    $tokenMap: map-merge(
+      $tokenMap,
+      (
+        '--#{$prefix}-#{$token}': #{$val}
+      )
+    );
+  }
+  @return $tokenMap;
+}
+
+@mixin tokensToVars($vars, $el: ':root') {
+  #{$el} {
+    @each $var, $val in $vars {
+      #{$var}: #{$val};
+    }
+  }
+}
+
+@mixin tokensToUtils($tokens, $vars, $prefix, $prop, $nested: '') {
+  $keys: map.keys($vars);
+  $tokenList: map.keys($tokens);
+  @each $token, $_ in $tokens {
+    $i: index($tokenList, $token);
+    .#{$prefix}-#{$token} #{$nested} {
+      #{$prop}: var(#{list.nth($keys, $i)});
+    }
+  }
+}

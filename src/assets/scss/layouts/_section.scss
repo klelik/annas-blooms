@@ -1,0 +1,88 @@
+@import 'assets/scss/utilities/mixin';
+
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: 1320px
+);
+
+$container-max-widths-wide: (
+  sm: 600px,
+  md: 800px,
+  lg: 1080px,
+  xl: 1240px,
+  xxl: 1440px
+);
+
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+
+  @include breakpoint(sm) {
+    max-width: map-get($container-max-widths, sm);
+  }
+  @include breakpoint(md) {
+    max-width: map-get($container-max-widths, md);
+  }
+  @include breakpoint(lg) {
+    max-width: map-get($container-max-widths, lg);
+  }
+  @include breakpoint(xl) {
+    max-width: map-get($container-max-widths, xl);
+  }
+  @include breakpoint(xxl) {
+    max-width: map-get($container-max-widths, xxl);
+  }
+}
+
+.container-wide {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+
+  @include breakpoint(sm) {
+    max-width: map-get($container-max-widths-wide, sm);
+  }
+  @include breakpoint(md) {
+    max-width: map-get($container-max-widths-wide, md);
+  }
+  @include breakpoint(lg) {
+    max-width: map-get($container-max-widths-wide, lg);
+  }
+  @include breakpoint(xl) {
+    max-width: map-get($container-max-widths-wide, xl);
+  }
+  @include breakpoint(xxl) {
+    max-width: map-get($container-max-widths-wide, xxl);
+  }
+}
+
+.content-section {
+  padding: 4rem 0;
+
+  @include breakpoint(md) {
+    padding: 5rem 0;
+  }
+
+  &-lg {
+    @include breakpoint(lg) {
+      padding: 10rem 0;
+    }
+  }
+
+  &.is-image {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  &:last-of-type {
+    padding-bottom: 0;
+  }
+}

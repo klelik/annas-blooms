@@ -1,0 +1,65 @@
+/* ==========================
+Spacing tokens
+============================= */
+$tokens: (
+  'nil': 0,
+  'auto': auto,
+  '05': 0.1125rem,
+  // 5px
+  1: 0.625rem,
+  // 10px
+  2: 1.25rem,
+  // 20px
+  3: 1.875rem,
+  // 30px
+  4: 2.5rem,
+  // 40px
+  5: 3.125rem,
+  // 50px
+  6: 3.75rem,
+  // 60px
+  7: 4.375rem,
+  // 70px
+  8: 5rem,
+  // 80px,
+  9: 5.625rem,
+  // 90px
+  10: 6.25rem,
+  11: 6.875rem,
+  12: 7.5rem,
+  13: 8.125rem,
+
+  // Fluid spacing
+  '1-3': getFluidSize(0.625rem, 1.875rem),
+  // fluid between 10 and 30px
+  '2-3': getFluidSize(1.25rem, 1.875rem),
+  // fluid between 20 and 30px
+  '2-5': getFluidSize(1.25rem, 3.125rem),
+  // fluid between 20 and 50px
+  '5-8': getFluidSize(3.125rem, 5rem) // fluid between 50 and 80px,
+);
+
+$vars: createCssVars($tokens, 'space');
+
+/* ==========================
+Space tokens
+============================= */
+@include tokensToVars($vars);
+
+/* ==========================
+Space utility classes
+============================= */
+// Margins
+@include tokensToUtils($tokens, $vars, 'm', 'margin');
+@include tokensToUtils($tokens, $vars, 'mi', 'margin-inline');
+@include tokensToUtils($tokens, $vars, 'mb', 'margin-block');
+
+// Padding
+@include tokensToUtils($tokens, $vars, 'p', 'padding');
+@include tokensToUtils($tokens, $vars, 'pi', 'padding-inline');
+@include tokensToUtils($tokens, $vars, 'pb', 'padding-block');
+
+// Gap
+@include tokensToUtils($tokens, $vars, 'flex-gap', '--flex-gap');
+@include tokensToUtils($tokens, $vars, 'grid-gap', '--grid-gap');
+@include tokensToUtils($tokens, $vars, 'flow-gap', '--flow-gap', '> *');

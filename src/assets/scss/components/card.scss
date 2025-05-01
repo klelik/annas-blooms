@@ -1,0 +1,121 @@
+.card {
+  border-radius: 0.5rem;
+  padding-bottom: 1rem;
+  padding: var(--space-1);
+  position: relative;
+  backdrop-filter: blur(10px);
+  background-color: var(--header-bg);
+  overflow: hidden;
+
+  &__tag {
+    --chip-bg: var(--main-color);
+    --chip-padding: var(--space-05) var(--space-1);
+    --chip-text-size: var(--ts-tiny);
+  }
+
+  &__description {
+    color: var(--c-grey);
+  }
+}
+
+.project-card {
+  min-height: 12rem;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.9;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, #000000 100%);
+  }
+}
+
+.card--spread-image {
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  // &:hover {
+  //   transform: scale(1.05);
+  //   transition: transform 0.3s ease-in-out;
+  // }
+
+  & .title {
+    font-weight: 700 !important;
+  }
+}
+
+.card > :last-child {
+  margin-bottom: 0;
+}
+
+.card .title {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.card::hover .card__body {
+  color: var(--c-popping-orange);
+}
+
+.card img {
+  display: block;
+  height: 100%;
+  left: 0;
+  top: 0;
+  object-fit: cover;
+  object-position: 50% 50%;
+  position: absolute;
+  width: 100% !important;
+  z-index: -1;
+}
+
+.card__body {
+  font-size: var(--ts-tiny);
+  margin-top: var(--space-1);
+}
+
+// Overlay gradient
+.card-overlay::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: -1;
+  border-radius: inherit;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.card:hover .title {
+  color: var(--c-main-color);
+}
+.card:hover .card-overlay::after {
+  background-color: rgba(0, 0, 0, 0.9) !important; /* Use !important for now to ensure it overrides */
+}
+
+.card:hover .card__content,
+.card:hover .card__content .title {
+  color: var(--c-main-color);
+}
+
+/* ==========================
+  CARD REVEAL ANIMATION
+  ============================= */
+.card[data-waiting] {
+  transition:
+    opacity 0.5s calc(0.15s + (0.1s * var(--card-index, 0))) ease-out,
+    transform 0.45s calc(0.1s + (0.1s * var(--card-index, 0))) cubic-bezier(0.39, 0.57, 0.56, 1);
+}
+
+.card[data-waiting='true'] {
+  opacity: 0;
+  transform: translate3d(0, 0.75rem, 0);
+}

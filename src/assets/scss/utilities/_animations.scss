@@ -1,0 +1,45 @@
+//Wave
+.animate-waving {
+  animation: waving 2s linear infinite;
+}
+
+@keyframes waving {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(14deg);
+  }
+  20% {
+    transform: rotate(-8deg);
+  }
+  30% {
+    transform: rotate(14deg);
+  }
+  40% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(8deg);
+  }
+  60% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes pulseFlash {
+  0% {
+    transform: scale(1);
+    background: var(--dot-color);
+  }
+
+  50%,
+  100% {
+    transform: scale(calc(var(--dot-flash-radius) / var(--dot-radius)));
+    opacity: 0;
+    background: var(--dot-flash-color);
+  }
+}

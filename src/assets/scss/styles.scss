@@ -1,0 +1,42 @@
+/* purgecss start ignore */
+
+/* ==========================
+CSS Reset
+============================= */
+@import 'core/reset';
+
+/* ==========================
+CORE STYLES AND CONFIG
+============================= */
+@import 'core/global';
+@import 'core/tokens';
+
+/* =================================
+COMPONENTS
+==================================== */
+@import 'components/header';
+@import 'components/button';
+@import 'components/masthead';
+@import 'components/footer';
+@import 'components/footer';
+@import 'components/section-header';
+@import 'components/marquee';
+@import 'components/card';
+
+/* =================================
+LAYOUTS
+==================================== */
+@import 'layouts/flex';
+@import 'layouts/grid';
+@import 'layouts/flow';
+@import 'layouts/section';
+
+/* ==========================
+UTILITIES
+============================= */
+@import 'utilities/mixin';
+@import 'utilities/colors';
+@import 'utilities/fonts';
+@import 'utilities/font-size';
+@import 'utilities/space';
+@import 'utilities/animations';
