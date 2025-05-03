@@ -1,26 +1,33 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: "2024-11-01",
+  compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
-  srcDir: "./src",
+  srcDir: './src',
 
-  components: [
-    "@/components",
-    "@/components/atoms",
-    { path: "@/components/blocks", global: true },
-  ],
+  components: ['@/components', '@/components/atoms', { path: '@/components/blocks', global: true }],
 
-  css: ["@/assets/scss/styles.scss"],
+  css: ['@/assets/scss/styles.scss'],
   modules: [
-    "@vueuse/nuxt",
-    "@nuxt/image",
-    "nuxt-svgo",
-    "nuxt-aos",
-    "@nuxt/eslint",
+    '@vueuse/nuxt',
+    '@nuxt/image',
+    'nuxt-svgo',
+    'nuxt-aos',
+    '@nuxt/eslint',
+    'nuxt-graphql-client',
   ],
+  'graphql-client': {
+    clients: {
+      default: {
+        host: process.env.GQL_HOST,
+        corsOptions: { mode: 'cors', credentials: 'include' },
+        headers: { Origin: process.env.APP_HOST || 'http://localhost:3000' },
+        schema: process.env.GQL_HOST,
+      },
+    },
+  },
   eslint: {},
   image: {
-    format: ["webp"],
+    format: ['webp'],
     screens: {
       xs: 320,
       sm: 640,
@@ -28,15 +35,15 @@ export default defineNuxtConfig({
       lg: 1024,
       xl: 1280,
       xxl: 1536,
-      "2xl": 1536,
+      '2xl': 1536,
     },
   },
   aos: {
     // Global settings:
     disable: false, // accepts following values: 'phone', 'tablet', 'mobile', boolean, expression or function
-    startEvent: "DOMContentLoaded", // name of the event dispatched on the document, that AOS should initialize on
-    initClassName: "aos-init", // class applied after initialization
-    animatedClassName: "aos-animate", // class applied on animation
+    startEvent: 'DOMContentLoaded', // name of the event dispatched on the document, that AOS should initialize on
+    initClassName: 'aos-init', // class applied after initialization
+    animatedClassName: 'aos-animate', // class applied on animation
     useClassNames: false, // if true, will add content of `data-aos` as classes on scroll
     disableMutationObserver: false, // disables automatic mutations' detections (advanced)
     debounceDelay: 50, // the delay on debounce used while resizing window (advanced)
@@ -46,19 +53,19 @@ export default defineNuxtConfig({
     offset: 120, // offset (in px) from the original trigger point
     delay: 0, // values from 0 to 3000, with step 50ms
     duration: 400, // values from 0 to 3000, with step 50ms
-    easing: "ease-in-out", // default easing for AOS animations
+    easing: 'ease-in-out', // default easing for AOS animations
     once: false, // whether animation should happen only once - while scrolling down
     mirror: false, // whether elements should animate out while scrolling past them
     //anchorPlacement: "top-bottom", // defines which position of the element regarding to window should trigger the animation
     // Adding console log when AOS initializes
     init: () => {
-      console.log("AOS has been initialized");
+      console.log('AOS has been initialized')
     },
   },
   app: {
     head: {
       htmlAttrs: {
-        lang: "en",
+        lang: 'en',
       },
       link: [
         // {
@@ -88,21 +95,26 @@ export default defineNuxtConfig({
       script: [],
       meta: [
         {
-          name: "viewport",
-          content: "width=device-width, initial-scale=1, maximum-scale=1",
+          name: 'viewport',
+          content: 'width=device-width, initial-scale=1, maximum-scale=1',
         },
-        { charset: "utf-8" },
-        { name: "msapplication-TileColor", content: "#2b5797" },
-        { name: "theme-color", content: "#ffffff" },
+        { charset: 'utf-8' },
+        { name: 'msapplication-TileColor', content: '#2b5797' },
+        { name: 'theme-color', content: '#ffffff' },
       ],
     },
     pageTransition: {
-      name: "page",
-      mode: "out-in",
+      name: 'page',
+      mode: 'out-in',
     },
     layoutTransition: {
-      name: "page",
-      mode: "out-in",
+      name: 'page',
+      mode: 'out-in',
     },
   },
-});
+  runtimeConfig: {
+    public: {
+      GQL_HOST: process.env.GQL_HOST,
+    },
+  },
+})

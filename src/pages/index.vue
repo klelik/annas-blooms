@@ -11,5 +11,5 @@
 </template>
 
 <script setup lang="ts">
-import { appName, socialLinks } from "@/utils/constants.js";
+import { appName, socialLinks } from '@/utils/constants.js'
 </script>
