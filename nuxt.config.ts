@@ -21,9 +21,11 @@ export default defineNuxtConfig({
         host: process.env.GQL_HOST,
         corsOptions: { mode: 'cors', credentials: 'include' },
         headers: { Origin: process.env.APP_HOST || 'http://localhost:3000' },
-        schema: process.env.GQL_HOST,
       },
     },
+  },
+  alias: {
+    '#woo': '../.nuxt/gql/default',
   },
   eslint: {},
   image: {

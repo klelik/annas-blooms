@@ -22,3 +22,7 @@ logs
 .env
 .env.*
 !.env.example
+
+# Generated gql
+/src/gql/generated
+codegen.ts
