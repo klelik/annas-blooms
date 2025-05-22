@@ -20,28 +20,47 @@ query getProducts(
       endCursor
     }
     nodes {
-      name
-      onSale
-      slug
-      type
-      date
       databaseId
-      id
-      averageRating
-      reviewCount
-      terms(first: 1000) {
-        nodes {
-          taxonomyName
-          slug
-        }
+      slug
+      name
+      type: __typename
+
+      image {
+        sourceUrl(size: WOOCOMMERCE_THUMBNAIL)
+        altText
       }
-      productCategories {
+
+      productCategories(first: 3) {
         nodes {
-          databaseId
           slug
           name
-          count
         }
+      }
+
+      ... on SimpleProduct {
+        onSale
+        price
+        salePrice
+        regularPrice
+        averageRating
+      }
+
+      ... on VariableProduct {
+        onSale
+        price
+        salePrice
+        regularPrice
+        averageRating
+      }
+
+      ... on ExternalProduct {
+        price
+        averageRating
+      }
+
+      ... on GroupProduct {
+        price
+        averageRating
       }
     }
   }
