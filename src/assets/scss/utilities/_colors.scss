@@ -2,10 +2,12 @@ $tokens: (
   // Core
   'dark-soil': #1e1e1e,
   'deep-dark': #0e0f11,
-  'warm-white': #f4f3ef,
+  'warm-white': #f7f9ee,
   'white': #ffffff,
   'grey': #4d4d4d,
-  'main-color': #d0ff71
+  'main-color': #c0797f,
+  'rich-brown': #4a3f3a,
+  'rich-brown-secondary': #6b5b55
 );
 
 $vars: createCssVars($tokens, 'c');
@@ -19,27 +21,35 @@ Colour tokens
 Themes
 ============================= */
 html {
-  --bg-color: var(--c-deep-dark);
-  --text-color: var(--c-white);
-  --heading-color: var(--c-white);
+  --bg-color: var(--c-warm-white);
+  --heading-color: var(--c-rich-brown);
+  --text-color: var(--c-rich-brown-secondary);
   --text-hover-color: var(--c-popping-orange);
 }
 
 html.dark {
-  --bg-color: var(--c-deep-dark);
-  --text-color: var(--c-white);
-  --heading-color: var(--c-white);
+  --bg-color: var(--c-rich-brown);
+  --heading-color: var(--c-warm-white);
+  --text-color: var(--c-warm-white);
   --text-hover-color: var(--c-popping-orange);
 }
 
 html.light {
-  --bg-color: var(--c-white);
-  --text-color: var(--c-deep-dark);
-  --heading-color: var(--c-deep-dark);
+  --bg-color: var(--c-warm-white);
+  --heading-color: var(--c-rich-brown);
+  --text-color: var(--c-rich-brown-secondary);
   --text-hover-color: var(--c-popping-orange);
 }
 
 .section-inverse-theme {
   background-color: var(--text-color);
   color: var(--bg-color);
+}
+
+.text-main {
+  color: var(--c-main-color);
+}
+
+.text-main-light {
+  color: #d4969c;
 }

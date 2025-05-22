@@ -1,6 +1,7 @@
 export interface Link {
   name?: string
-  url: string
+  params?: { [key: string]: string }
+  url?: string
   target?: string
 }
 export interface Image {
@@ -35,6 +36,11 @@ export interface Card {
   tags?: string[]
   description?: string
   link?: Link
+  onSale: boolean
+  regularPrice?: string
+  salePrice?: string
+  price?: string
+  averageRating: number
 }
 
 export interface Response<T> {

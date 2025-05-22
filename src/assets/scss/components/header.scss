@@ -1,13 +1,15 @@
 @import 'assets/scss/utilities/mixin';
 
 :root {
-  --header-bg: rgba(38, 40, 44, 0.8);
+  --header-bg: hsla(0, 0%, 96%, 0.8);
 }
 
 html.light {
+  --header-bg: hsla(0, 0%, 96%, 0.8);
+}
+html.dark {
   --header-bg: rgba(38, 40, 44, 0.8);
 }
-
 /* ==========================
    HEADER WRAPPER STYLES
 ============================= */

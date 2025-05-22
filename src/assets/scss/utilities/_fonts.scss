@@ -2,9 +2,12 @@
 Font tokens
 ============================= */
 @import url('https://api.fontshare.com/v2/css?f[]=synonym@500&f[]=chillax@500,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter&family=League+Spartan:wght@500&family=Maven+Pro:wght@500&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 
 $tokens: (
-  'headline': "'Chillax', sans-serif",
+  // 'headline': "'Chillax', sans-serif",
+  'headline': "'Playfair Display', serif",
+
   'primary': "'Synonym', sans-serif"
 );
 

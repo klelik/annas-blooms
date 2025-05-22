@@ -1,11 +1,26 @@
+.featured-products-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  // gap: var(--space-1);
+}
+
+.card-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .card {
   border-radius: 0.5rem;
   padding-bottom: 1rem;
   padding: var(--space-1);
   position: relative;
   backdrop-filter: blur(10px);
-  background-color: var(--header-bg);
-  overflow: hidden;
+  background: linear-gradient(160deg, #f1ebe6 0%, #ebe4df 40%, #f3f1ec 100%);
+  // overflow: hidden;
 
   &__tag {
     --chip-bg: var(--main-color);
@@ -16,21 +31,36 @@
   &__description {
     color: var(--c-grey);
   }
-}
 
-.project-card {
-  min-height: 12rem;
-  position: relative;
+  &__price {
+    display: flex;
+    flex-direction: column;
+    color: #4a3f3a;
 
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.9;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, #000000 100%);
+    &--sale {
+      font-size: var(--ts-body-large);
+      color: #d4556b;
+    }
+    &--regular {
+      text-decoration: line-through;
+      color: #8a7c75;
+    }
+  }
+
+  &__sale-badge {
+    // position: absolute;
+    // top: 0;
+    // left: 0;
+    padding: var(--space-05);
+    background-color: #d4556b;
+    color: var(--c-warm-white);
+    border-radius: var(--radius-pill);
+    font-size: var(--ts-micro);
+    width: fit-content;
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-weight: medium;
   }
 }
 
@@ -63,17 +93,18 @@
   color: var(--c-popping-orange);
 }
 
-.card img {
-  display: block;
-  height: 100%;
-  left: 0;
-  top: 0;
-  object-fit: cover;
-  object-position: 50% 50%;
-  position: absolute;
-  width: 100% !important;
-  z-index: -1;
-}
+// Full image card
+// .card img {
+//   display: block;
+//   height: 100%;
+//   left: 0;
+//   top: 0;
+//   object-fit: cover;
+//   object-position: 50% 50%;
+//   position: absolute;
+//   width: 100% !important;
+//   z-index: -1;
+// }
 
 .card__body {
   font-size: var(--ts-tiny);
@@ -98,7 +129,12 @@
   color: var(--c-main-color);
 }
 .card:hover .card-overlay::after {
-  background-color: rgba(0, 0, 0, 0.9) !important; /* Use !important for now to ensure it overrides */
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.9
+  ) !important; /* Use !important for now to ensure it overrides */
 }
 
 .card:hover .card__content,
@@ -118,4 +154,99 @@
 .card[data-waiting='true'] {
   opacity: 0;
   transform: translate3d(0, 0.75rem, 0);
+}
+
+// Project card
+.project-card {
+  min-height: 12rem;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.9;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, #000000 100%);
+  }
+}
+
+//Flower card
+.flower-card {
+  --inset-border-space: var(--space-1);
+  padding: var(--space-2);
+  min-height: 25rem;
+  max-width: 12rem;
+  border-radius: 95.2380952381px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: padding 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
+
+  & .cta {
+    position: absolute;
+    bottom: var(--space-4);
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) 0.55s,
+      transform 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) 0.55s;
+    transition-delay: 0s;
+    background: #c0797f;
+    color: white;
+
+    &:hover {
+      background: #a6656b;
+    }
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: var(--inset-border-space);
+    left: var(--inset-border-space);
+    right: var(--inset-border-space);
+    bottom: var(--inset-border-space);
+    border: 2px solid var(--bg-color);
+    border-radius: 85px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.9;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, var(--bg-color) 100%);
+    transition: opacity 0.3s ease 0.15s;
+  }
+
+  &:hover {
+    padding: 0;
+
+    &::after {
+      opacity: 0;
+      z-index: -1;
+    }
+    &::before {
+      opacity: 1;
+    }
+    & .cta {
+      opacity: 1;
+      transform: none;
+      transition-delay: 0.55s;
+    }
+  }
+}
+
+.flower-card .card__image {
+  max-width: 100%;
+  max-height: 100%;
 }
