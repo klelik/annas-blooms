@@ -9,7 +9,7 @@
         :height="image.height"
         class="card__image"
       />
-      <button class="cta">Add to Cart</button>
+      <button class="cta" @click="cart.toggleCart()">Add to Cart {{ cart.isShowingCart }}</button>
     </div>
 
     <div class="flow flow-gap-1">
@@ -38,8 +38,11 @@
 
 <script setup lang="ts">
 import type { Card } from '~/types'
+import { useCartStore } from '~/stores/cart'
 
 const props = defineProps<Card>()
+const cart = useCartStore()
+
 console.log('Card Props:', props)
 
 const processedLink = computed(() => {

@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     'nuxt-aos',
     '@nuxt/eslint',
     'nuxt-graphql-client',
+    '@pinia/nuxt',
   ],
   'graphql-client': {
     clients: {
