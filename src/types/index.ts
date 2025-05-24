@@ -1,9 +1,38 @@
+import type {
+  SimpleProductFragment as SimpleProduct,
+  VariableProductFragment as VariableProduct,
+  ExternalProductFragment as ExternalProduct,
+  ProductWithAttributesFragment as ProductWithAttributes,
+  VariationAttributeFragment as VariationAttribute,
+} from '#gql'
+type ProductBase = import('#gql').GetProductQuery['product']
+export interface Variation {
+  name?: string | null
+  databaseId?: number
+  price?: string | null
+  regularPrice?: string | null
+  salePrice?: string | null
+  slug?: string | null
+  stockQuantity?: number | null
+  stockStatus?: StockStatusEnum | null
+  hasAttributes?: boolean | null
+  image?: Image | null
+  attributes?: { nodes?: VariationAttribute[] } | null
+  node?: SimpleProduct | VariableProduct
+}
+
+export type Product = ProductBase &
+  SimpleProduct &
+  VariableProduct &
+  ExternalProduct &
+  ProductWithAttributes
 export interface Link {
   name?: string
   params?: { [key: string]: string }
   url?: string
   target?: string
 }
+
 export interface Image {
   src: string
   alt: string
@@ -41,6 +70,8 @@ export interface Card {
   salePrice?: string
   price?: string
   averageRating: number
+  product: Product
+  type: ProductTypesEnum
 }
 
 export interface Response<T> {

@@ -27,6 +27,11 @@ html.dark {
   font-size: var(--ts-label);
   color: var(--text-color);
 
+  &-hidden {
+    // z-index: 0;
+    pointer-events: none;
+  }
+
   .header--scrolled {
     width: 50rem !important;
     backdrop-filter: blur(10px);

@@ -51,14 +51,19 @@
             :sale-price="prod.salePrice"
             :price="prod.price"
             :average-rating="prod.averageRating"
+            :type="prod.type"
             :link="{
               name: 'product-slug',
               params: { slug: prod?.slug },
               target: '_self',
             }"
+            :product="prod"
           />
         </div>
       </div>
+    </section>
+    <section class="content-section">
+      <div class="container">Cart: {{ cart.cart }}</div>
     </section>
   </div>
 </template>
@@ -66,10 +71,12 @@
 <script setup lang="ts">
 import { appName, socialLinks } from '@/utils/constants.js'
 import { ProductsOrderByEnum } from '#woo'
-import type { ProductCategory, Product, Image } from '../../types/index'
+import type { ProductCategory, Image } from '../../types/index'
+import type { Product } from '~/types'
+import { useCartStore } from '~/stores/cart'
 
+const cart = useCartStore()
 const cachedProducts = ref<Product[] | null>(null)
-
 const { data: categories } = await useAsyncGql('getProductCategories', {
   first: 6,
 })

@@ -9,14 +9,21 @@
         :height="image.height"
         class="card__image"
       />
-      <button class="cta" @click="cart.toggleCart()">Add to Cart {{ cart.isShowingCart }}</button>
+      <button
+        v-if="type === 'SimpleProduct'"
+        class="cta"
+        secondary
+        @click.prevent.stop="handleAddToCart"
+        :disabled="isAddingToCart"
+      >
+        {{ isAddingToCart ? 'Adding...' : 'Add to Cart' }}
+      </button>
     </div>
 
     <div class="flow flow-gap-1">
       <div class="flex" data-center>
         <div class="flow flow-gap-05">
           <div v-if="onSale" class="card__sale-badge">On Sale</div>
-
           <h5 v-if="title" class="card__title">{{ title }}</h5>
         </div>
       </div>
@@ -38,12 +45,44 @@
 
 <script setup lang="ts">
 import type { Card } from '~/types'
+import type { AddToCartInput } from '#gql'
 import { useCartStore } from '~/stores/cart'
 
 const props = defineProps<Card>()
-const cart = useCartStore()
+const cartStore = useCartStore()
 
-console.log('Card Props:', props)
+// Loading state for add to cart
+const isAddingToCart = ref(false)
+
+// Create proper AddToCart input
+const createAddToCartInput = (): AddToCartInput => {
+  return {
+    productId: props.product?.databaseId || 0,
+    quantity: 1, // Changed from 3 to 1 as default
+  }
+}
+
+// Handle add to cart with proper error handling
+const handleAddToCart = async () => {
+  if (!props.product?.databaseId) {
+    console.error('No product ID available')
+    return
+  }
+
+  try {
+    isAddingToCart.value = true
+    const input = createAddToCartInput()
+    console.log('Add to Cart Input:', input)
+
+    await cartStore.addToCart(input)
+    console.log('Successfully added to cart')
+  } catch (error) {
+    console.error('Failed to add to cart:', error)
+    // You could add a toast notification here
+  } finally {
+    isAddingToCart.value = false
+  }
+}
 
 const processedLink = computed(() => {
   if (!props.link) return '#'
