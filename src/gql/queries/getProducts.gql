@@ -51,6 +51,29 @@ query getProducts(
         salePrice
         regularPrice
         averageRating
+        variations(first: 100) {
+          nodes {
+            name
+            databaseId
+            price
+            regularPrice
+            salePrice
+            slug
+            stockQuantity
+            stockStatus
+            hasAttributes
+            image {
+              ...Image
+              cartSourceUrl: sourceUrl(size: THUMBNAIL)
+              producCardSourceUrl: sourceUrl(size: WOOCOMMERCE_THUMBNAIL)
+            }
+            attributes {
+              nodes {
+                ...VariationAttribute
+              }
+            }
+          }
+        }
       }
 
       ... on ExternalProduct {
@@ -64,4 +87,11 @@ query getProducts(
       }
     }
   }
+}
+
+fragment VariationAttribute on VariationAttribute {
+  name
+  attributeId
+  value
+  label
 }
