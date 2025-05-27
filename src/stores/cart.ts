@@ -200,7 +200,7 @@ export const useCartStore = defineStore('cart', {
 
         // If session error, refresh cart
         if (error.gqlErrors?.[0]?.message?.includes('Internal server error')) {
-          console.log('🔄 Internal server error, attempting to refresh cart...')
+          console.log('Internal server error, attempting to refresh cart...')
           await this.refreshCart()
         }
       }

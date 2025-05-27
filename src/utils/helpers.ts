@@ -11,7 +11,6 @@ export const getBaseUrl = () => {
 }
 
 export function randomizeArray<T>(array: T[]): T[] {
-  // Create a copy of the array to avoid mutating the original array
   const randomizedArray = [...array]
 
   // Fisher-Yates (Knuth) Shuffle Algorithm
@@ -31,4 +30,9 @@ export const getRawPrice = (price: string) => {
   const { currency } = useAppConfig()
   const priceWithoutCurrency = price.replace(currency.symbol, '').trim()
   return parseFloat(priceWithoutCurrency)
+}
+
+export const isValidPostcodeFormat = (postcode: string) => {
+  const ukPostcodeRegex = /^[A-Z]{1,2}[0-9][A-Z0-9]?\s?[0-9][A-Z]{2}$/i
+  return ukPostcodeRegex.test(postcode.trim())
 }

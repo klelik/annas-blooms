@@ -218,6 +218,10 @@
   &:hover &__image {
     padding: 0;
   }
+
+  &--small {
+    zoom: 0.8;
+  }
   &__image {
     margin: auto;
     width: 94px;
