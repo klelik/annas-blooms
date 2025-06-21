@@ -17,22 +17,40 @@
         >
           <span class="hamburger-inner" aria-hidden="true" />
         </button>
+
         <nav class="main-nav">
           <ul class="flex flx-gap-2">
-            <li v-for="(item, index) in appRoutes" :key="index" class="dot-hover-effect">
-              <NuxtLink :to="item.path" :class="{ active: $route.path === item.path }">
+            <li
+              v-for="(item, index) in appRoutes"
+              :key="index"
+              class="dot-hover-effect"
+              :class="{ active: isActiveRoute(item.path) }"
+            >
+              <NuxtLink
+                :to="item.path"
+                :class="{ active: isActiveRoute(item.path) }"
+                @click="handleNavClick"
+              >
                 {{ item.label }}
               </NuxtLink>
             </li>
           </ul>
         </nav>
+
         <div class="header__logo">
           <NuxtLink to="/">
             <Logo />
           </NuxtLink>
         </div>
+
         <div class="socials flex flex-gap-2">
-          <button class="dot-hover-effect">
+          <button
+            class="dot-hover-effect"
+            :class="{ active: isAccountActive }"
+            @click="handleAccountClick"
+            aria-label="Account"
+          >
+            <!-- Account SVG -->
             <svg
               xmlns="http://www.w3.org/2000/svg"
               aria-hidden="true"
@@ -49,22 +67,25 @@
                 stroke="currentColor"
                 stroke-width="1.5"
                 stroke-miterlimit="10"
-              ></path>
+              />
               <path
                 d="M2.66406 19.0625C3.50877 17.5991 4.72384 16.3838 6.18712 15.5389C7.65039 14.694 9.31031 14.2492 11 14.2492C12.6897 14.2492 14.3496 14.694 15.8129 15.5389C17.2762 16.3838 18.4912 17.5991 19.3359 19.0625"
                 stroke="currentColor"
                 stroke-width="1.5"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-              ></path>
+              />
             </svg>
           </button>
+
           <!-- Cart Trigger -->
           <button
             class="cart-trigger dot-hover-effect"
+            :class="{ active: cartStore.isShowingCart }"
             @click="toggleCart()"
-            :aria-label="`Cart with items`"
+            :aria-label="`Cart with ${cartStore.cartItemsCount || 0} items`"
           >
+            <!-- Cart SVG -->
             <svg
               class="icon icon-cart"
               width="22"
@@ -79,14 +100,14 @@
                 stroke-width="1.5"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-              ></path>
+              />
               <path
                 d="M6.875 6C6.875 4.90598 7.3096 3.85677 8.08318 3.08318C8.85677 2.3096 9.90598 1.875 11 1.875C12.094 1.875 13.1432 2.3096 13.9168 3.08318C14.6904 3.85677 15.125 4.90598 15.125 6"
                 stroke="currentColor"
                 stroke-width="1.5"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-              ></path>
+              />
             </svg>
             <span v-if="cartStore.cartItemsCount > 0" class="cart-trigger__badge">
               {{ cartStore.cartItemsCount }}
@@ -105,21 +126,37 @@
 import { useWindowScroll } from '@vueuse/core'
 
 const { y } = useWindowScroll()
+const { isActiveRoute } = useNavigation()
+const route = useRoute()
 const shrink = ref(false)
 const hide = ref(false)
 const isOpen = ref<boolean>(false)
+const isAccountActive = ref(false)
 
 const cartStore = useCartStore()
+
 const toggleCart = () => {
-  // ui.toggleOverlay()
   cartStore.toggleCart()
   if (cartStore.isShowingCart) {
     hide.value = true
   }
 }
+
+//TODO: Implement Accounts
+const handleAccountClick = () => {
+  isAccountActive.value = !isAccountActive.value
+}
+
+const handleNavClick = () => {
+  if (isOpen.value) {
+    close()
+  }
+}
+
 const handleKeydownEvent = (event: KeyboardEvent) => {
   if (event.key === 'Escape') {
     close()
+    isAccountActive.value = false
   }
 }
 
@@ -147,7 +184,6 @@ watch(y, (newValue, oldValue) => {
   shrink.value = newValue > 10
 
   if (cartStore.isShowingCart) {
-    //if cart open hide menu
     hide.value = true
   } else {
     if (newValue > 200) {
@@ -157,6 +193,16 @@ watch(y, (newValue, oldValue) => {
     }
   }
 })
+
+watch(
+  () => route.path,
+  () => {
+    isAccountActive.value = false
+    if (isOpen.value) {
+      close()
+    }
+  }
+)
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydownEvent)
