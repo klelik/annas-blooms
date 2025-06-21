@@ -1,44 +1,10 @@
 <template>
-  <header class="site-header container-wide" :class="{ 'site-header-hidden': hide }">
-    <div class="site-header__container" :class="{ 'header-hidden': hide }">
+  <header class="site-header container-full" :class="{ 'site-header-hidden': hide }">
+    <div
+      class="site-header__container"
+      :class="{ 'header-hidden': hide, 'header-colored': shrink }"
+    >
       <div class="site-header__content">
-        <div class="header__logo">
-          <NuxtLink to="/">
-            <Logo />
-          </NuxtLink>
-        </div>
-        <nav class="main-nav flex">
-          <ul class="flex">
-            <li v-for="(item, index) in appRoutes" :key="index">
-              <NuxtLink :to="item.path" :class="{ active: $route.path === item.path }">
-                {{ item.label }}
-              </NuxtLink>
-            </li>
-          </ul>
-        </nav>
-        <div class="socials flex">
-          <!-- Cart Trigger -->
-          <button class="cart-trigger" @click="toggleCart()" :aria-label="`Cart with items`">
-            <svg
-              class="cart-trigger__icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M3 3H5L5.4 5M7 13H17L21 5H5.4M7 13L5.4 5M7 13L4.7 15.3C4.3 15.7 4.6 16.5 5.1 16.5H17M17 13V16.5M9 19.5C9.8 19.5 10.5 20.2 10.5 21S9.8 22.5 9 22.5 7.5 21.8 7.5 21 8.2 19.5 9 19.5ZM20 19.5C20.8 19.5 21.5 20.2 21.5 21S20.8 22.5 20 22.5 18.5 21.8 18.5 21 19.2 19.5 20 19.5Z"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <span v-if="cartStore.cartItemsCount > 0" class="cart-trigger__badge">
-              {{ cartStore.cartItemsCount }}
-            </span>
-          </button>
-        </div>
-
         <!-- Mobile Menu Button -->
         <button
           id="MenuTrigger"
@@ -51,6 +17,82 @@
         >
           <span class="hamburger-inner" aria-hidden="true" />
         </button>
+        <nav class="main-nav">
+          <ul class="flex flx-gap-2">
+            <li v-for="(item, index) in appRoutes" :key="index" class="dot-hover-effect">
+              <NuxtLink :to="item.path" :class="{ active: $route.path === item.path }">
+                {{ item.label }}
+              </NuxtLink>
+            </li>
+          </ul>
+        </nav>
+        <div class="header__logo">
+          <NuxtLink to="/">
+            <Logo />
+          </NuxtLink>
+        </div>
+        <div class="socials flex flex-gap-2">
+          <button class="dot-hover-effect">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+              focusable="false"
+              role="presentation"
+              class="icon icon-account"
+              width="22"
+              height="23"
+              fill="none"
+              viewBox="0 0 22 23"
+            >
+              <path
+                d="M11 14.25C14.0376 14.25 16.5 11.7876 16.5 8.75C16.5 5.71243 14.0376 3.25 11 3.25C7.96243 3.25 5.5 5.71243 5.5 8.75C5.5 11.7876 7.96243 14.25 11 14.25Z"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-miterlimit="10"
+              ></path>
+              <path
+                d="M2.66406 19.0625C3.50877 17.5991 4.72384 16.3838 6.18712 15.5389C7.65039 14.694 9.31031 14.2492 11 14.2492C12.6897 14.2492 14.3496 14.694 15.8129 15.5389C17.2762 16.3838 18.4912 17.5991 19.3359 19.0625"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+          </button>
+          <!-- Cart Trigger -->
+          <button
+            class="cart-trigger dot-hover-effect"
+            @click="toggleCart()"
+            :aria-label="`Cart with items`"
+          >
+            <svg
+              class="icon icon-cart"
+              width="22"
+              height="23"
+              viewBox="0 0 22 23"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M17.9437 6.6875H4.05622C3.88705 6.68829 3.72396 6.75067 3.59744 6.86296C3.47091 6.97525 3.3896 7.12978 3.36872 7.29766L2.14841 18.2977C2.13756 18.3935 2.14699 18.4906 2.1761 18.5825C2.20521 18.6745 2.25335 18.7593 2.31738 18.8314C2.38141 18.9035 2.4599 18.9614 2.54776 19.0012C2.63561 19.041 2.73086 19.0619 2.82732 19.0625H19.1726C19.2691 19.0619 19.3643 19.041 19.4522 19.0012C19.54 18.9614 19.6185 18.9035 19.6826 18.8314C19.7466 18.7593 19.7947 18.6745 19.8238 18.5825C19.853 18.4906 19.8624 18.3935 19.8515 18.2977L18.6312 7.29766C18.6103 7.12978 18.529 6.97525 18.4025 6.86296C18.276 6.75067 18.1129 6.68829 17.9437 6.6875Z"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+              <path
+                d="M6.875 6C6.875 4.90598 7.3096 3.85677 8.08318 3.08318C8.85677 2.3096 9.90598 1.875 11 1.875C12.094 1.875 13.1432 2.3096 13.9168 3.08318C14.6904 3.85677 15.125 4.90598 15.125 6"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+            <span v-if="cartStore.cartItemsCount > 0" class="cart-trigger__badge">
+              {{ cartStore.cartItemsCount }}
+            </span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -123,24 +165,6 @@ onUnmounted(() => {
 
 <style scoped>
 /* Cart Trigger Button */
-.cart-trigger {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  color: var(--color-text-primary);
-  transition: all 0.2s ease;
-  border-radius: 6px;
-}
-
-.cart-trigger:hover {
-  color: var(--color-primary);
-  background-color: rgba(192, 121, 127, 0.1);
-}
 
 .cart-trigger__icon {
   width: 24px;

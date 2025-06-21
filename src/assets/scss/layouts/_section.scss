@@ -5,7 +5,7 @@ $container-max-widths: (
   md: 720px,
   lg: 960px,
   xl: 1140px,
-  xxl: 1320px
+  xxl: 1320px,
 );
 
 $container-max-widths-wide: (
@@ -13,7 +13,7 @@ $container-max-widths-wide: (
   md: 800px,
   lg: 1080px,
   xl: 1240px,
-  xxl: 1440px
+  xxl: 1440px,
 );
 
 .container {
@@ -85,4 +85,8 @@ $container-max-widths-wide: (
   &:last-of-type {
     padding-bottom: 0;
   }
+}
+
+.container-full {
+  max-width: 100%;
 }
