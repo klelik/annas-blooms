@@ -1,31 +1,43 @@
 <template>
-  <div class="masthead">
+  <div class="masthead" :class="[{ 'has-video': videoSrc }, heightClass, alignClass]">
+    <!-- Video Background -->
+    <video
+      v-if="videoSrc"
+      class="masthead__video"
+      :src="videoSrc"
+      :poster="videoPoster"
+      autoplay
+      muted
+      loop
+      playsinline
+    />
+
     <div class="container">
       <div class="masthead__content">
-        <div class="flow flow-gap-3" data-aos="fade-up" data-aos-once="true">
-          <slot name="tag" />
-          <h1
-            class="text-pretty"
-            data-aos="fade-up"
-            data-aos-once="true"
-            data-aos-delay="100"
-          >
-            <slot name="title" />
-          </h1>
-        </div>
+        <slot />
       </div>
     </div>
-    <!-- <div class="gradient" /> -->
   </div>
 </template>
 
-<script setup lang="ts"></script>
-<style lang="scss" scoped>
-.masthead-bottom-right {
-  position: absolute;
-  bottom: -2px;
-  right: -1px;
-  z-index: 9;
-  border-radius: 1rem 0 0 0;
+<script setup lang="ts">
+interface Props {
+  videoSrc?: string
+  videoPoster?: string
+  height?: 'small' | 'medium' | 'large'
+  align?: 'left' | 'center' | 'right'
 }
-</style>
+
+const props = withDefaults(defineProps<Props>(), {
+  height: 'large',
+  align: 'center',
+})
+
+const heightClass = computed(() => {
+  return `masthead--${props.height}`
+})
+
+const alignClass = computed(() => {
+  return `masthead--align-${props.align}`
+})
+</script>

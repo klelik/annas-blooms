@@ -1,11 +1,20 @@
 <template>
   <div>
-    <Masthead>
-      <template #title> Annas Blooms </template>
+    <Masthead
+      video-src="//cdn2.editmysite.com/videos/landing-pages/global/home/masthead/masthead-720.mp4"
+      video-poster="//cdn2.editmysite.com/images/landing-pages/global/home/masthead/poster.jpg"
+      align="left"
+      height=""
+    >
+      <div class="flow">
+        <h1>Celebrating life's moments with flowers</h1>
+        <p>Elevate everyday moments</p>
+        <button class="cta" primary>Shop Now</button>
+      </div>
     </Masthead>
     <section class="content-section">
       <div class="container">
-        <!-- <p v-for="cat in productCategories">{{ cat?.name }}</p> -->
+        <p v-for="cat in productCategories">{{ cat?.name }}</p>
 
         <SectionHeader :alignment="'left'" class="mb-3">
           <template #tag>

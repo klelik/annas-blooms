@@ -1,5 +1,5 @@
 <template>
-  <div class="mobile-menu container-wide" :class="{ open: isOpen }">
+  <div class="mobile-menu container-full" :class="{ open: isOpen }">
     <nav class="mobile-nav">
       <ul class="flex" data-column>
         <li
