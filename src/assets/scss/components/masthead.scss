@@ -88,7 +88,7 @@
     z-index: 1;
   }
 
-  &:has(.masthead__video) {
+  &:has(.video-background) {
     &::after {
       content: '';
       position: absolute;

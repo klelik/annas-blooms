@@ -28,11 +28,15 @@ Colour tokens
 ============================= */
 @include tokensToVars($vars);
 
+//Utils
+@include tokensToUtils($tokens, $vars, 'c', 'color');
+@include tokensToUtils($tokens, $vars, 'bg', 'background-color');
+
 /* ==========================
 Themes
 ============================= */
 html {
-  --bg-color: var(--c-warm-white);
+  --bg-color: var(--c-white);
   --heading-color: var(--c-rich-brown);
   --text-color: var(--c-rich-brown-secondary);
   --text-hover-color: var(--c-popping-orange);
@@ -40,7 +44,7 @@ html {
 
 html.dark {
   --bg-color: var(--c-rich-brown);
-  --heading-color: var(--c-warm-white);
+  --heading-color: var(--c-white);
   --text-color: var(--c-warm-white);
   --text-hover-color: var(--c-popping-orange);
 }
