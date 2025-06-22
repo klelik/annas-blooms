@@ -1,6 +1,6 @@
 <template>
   <NuxtLink v-if="link" :to="processedLink" class="card">
-    <div class="card__head">
+    <div class="card__head card-overlay">
       <div class="card__image">
         <NuxtImg
           v-if="image"

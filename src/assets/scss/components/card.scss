@@ -20,8 +20,12 @@
   &__head {
     position: relative;
     border-radius: var(--radius-small);
-    backdrop-filter: blur(10px);
-    background: linear-gradient(300deg, #f8f8f829 0%, #ebe4df6b 40%, #f3f1ec14 100%);
+    background: linear-gradient(
+      181deg,
+      rgba(235, 228, 223, 0.4196078431) 0%,
+      rgba(235, 228, 223, 0.4196078431) 40%,
+      rgba(243, 241, 236, 0.0784313725) 100%
+    );
   }
   &__image {
     position: relative;
@@ -111,30 +115,17 @@
   content: '';
   position: absolute;
   left: 0;
-  top: 0;
+  bottom: 0;
   width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  z-index: -1;
+  height: 30%; /* Adjust this to control how much of the bottom */
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.8), transparent);
+  z-index: 2;
   border-radius: inherit;
-  transition: background-color 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
 }
 
-.card:hover .title {
-  color: var(--c-main-color);
-}
 .card:hover .card-overlay::after {
-  background-color: rgba(
-    0,
-    0,
-    0,
-    0.9
-  ) !important; /* Use !important for now to ensure it overrides */
-}
-
-.card:hover .card__content,
-.card:hover .card__content .title {
-  color: var(--c-main-color);
+  opacity: 0;
 }
 
 /* ==========================
@@ -149,99 +140,4 @@
 .card[data-waiting='true'] {
   opacity: 0;
   transform: translate3d(0, 0.75rem, 0);
-}
-
-// Project card
-.project-card {
-  min-height: 12rem;
-  position: relative;
-
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.9;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, #000000 100%);
-  }
-}
-
-//Flower card
-.flower-card {
-  --inset-border-space: var(--space-1);
-  padding: var(--space-2);
-  min-height: 25rem;
-  max-width: 12rem;
-  border-radius: 95.2380952381px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: padding 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
-
-  & .cta {
-    position: absolute;
-    bottom: var(--space-4);
-    opacity: 0;
-    transform: translateY(8px);
-    transition:
-      opacity 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) 0.55s,
-      transform 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) 0.55s;
-    transition-delay: 0s;
-    background: #c0797f;
-    color: white;
-
-    &:hover {
-      background: #a6656b;
-    }
-  }
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: var(--inset-border-space);
-    left: var(--inset-border-space);
-    right: var(--inset-border-space);
-    bottom: var(--inset-border-space);
-    border: 2px solid var(--bg-color);
-    border-radius: 85px;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.9;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, var(--bg-color) 100%);
-    transition: opacity 0.3s ease 0.15s;
-  }
-
-  &:hover {
-    padding: 0;
-
-    &::after {
-      opacity: 0;
-      z-index: -1;
-    }
-    &::before {
-      opacity: 1;
-    }
-    & .cta {
-      opacity: 1;
-      transform: none;
-      transition-delay: 0.55s;
-    }
-  }
-}
-
-.flower-card .card__image {
-  max-width: 100%;
-  max-height: 100%;
 }

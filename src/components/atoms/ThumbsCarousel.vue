@@ -3,6 +3,7 @@
     <div class="gallery-wrapper">
       <!-- Thumbnail -->
       <swiper
+        v-if="processedImages.length > 1"
         ref="galleryThumbs"
         :space-between="8"
         :slides-per-view="thumbsSlidesPerView"
@@ -14,11 +15,11 @@
         @swiper="setThumbsSwiper"
         @click="onThumbClick"
       >
-        <swiper-slide v-for="(image, index) in images" :key="`thumb-${index}`">
+        <swiper-slide v-for="(image, index) in processedImages" :key="`thumb-${index}`">
           <div class="thumb-content">
             <NuxtImg
-              :src="image"
-              :alt="`${alt || 'Product'} - Thumbnail ${index + 1}`"
+              :src="image.sourceUrl"
+              :alt="image.altText || `${alt} thumbnail ${index + 1}`"
               class="thumb-image"
               loading="lazy"
               :placeholder="20"
@@ -29,9 +30,10 @@
 
       <!-- Main -->
       <swiper
+        v-if="processedImages.length >= 1"
         ref="galleryTop"
         :space-between="0"
-        :loop="images.length > 1"
+        :loop="processedImages.length > 1"
         :navigation="navigationOptions"
         :thumbs="{ swiper: thumbsSwiper }"
         :modules="modules"
@@ -39,12 +41,12 @@
         class="gallery-main"
         @slide-change="onMainSlideChange"
       >
-        <swiper-slide v-for="(image, index) in images" :key="`main-${index}`">
+        <swiper-slide v-for="(image, index) in processedImages" :key="`main-${index}`">
           <div class="slide-content">
             <div class="image-container">
               <NuxtImg
-                :src="image"
-                :alt="`${alt || 'Product'} - Image ${index + 1}`"
+                :src="image.sourceUrl"
+                :alt="image.altText || `${alt} - Image ${index + 1}`"
                 class="slide-image"
                 loading="lazy"
                 :placeholder="20"
@@ -53,16 +55,14 @@
           </div>
         </swiper-slide>
 
-        <div v-if="images.length > 1" class="swiper-button-prev"></div>
-        <div v-if="images.length > 1" class="swiper-button-next"></div>
+        <div v-if="processedImages.length > 1" class="swiper-button-prev"></div>
+        <div v-if="processedImages.length > 1" class="swiper-button-next"></div>
       </swiper>
     </div>
-    <p>test</p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Thumbs, FreeMode } from 'swiper'
 import type { Swiper as SwiperType } from 'swiper'
@@ -72,19 +72,18 @@ import 'swiper/css/navigation'
 import 'swiper/css/thumbs'
 import 'swiper/css/free-mode'
 import { useDebounceFn } from '@vueuse/core'
+import type { Image } from '~/types'
 
 //=============================
 // PROPS & EMITS
 //=============================
 interface Props {
-  images: string[]
+  x
+  images: (string | Image)[]
   alt?: string
-  loading?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  loading: false,
-})
+const props = defineProps<Props>()
 
 const MOBILE_BREAKPOINT = 768
 const THUMB_BREAKPOINT = 576
@@ -102,6 +101,30 @@ const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1024
 //=============================
 // COMPUTED
 //=============================
+const processedImages = computed(() => {
+  return props.images
+    .filter(Boolean)
+    .map((image) => {
+      if (typeof image === 'object' && image.sourceUrl) {
+        return {
+          sourceUrl: image.sourceUrl,
+          altText: image.altText || image.title || props.alt,
+        }
+      }
+
+      if (typeof image === 'string') {
+        return {
+          sourceUrl: image,
+          altText: props.alt,
+        }
+      }
+
+      // Fallback
+      return null
+    })
+    .filter(Boolean) as Image[]
+})
+
 const thumbsDirection = computed(() => {
   return windowWidth.value >= THUMB_BREAKPOINT ? 'vertical' : 'horizontal'
 })
@@ -113,15 +136,13 @@ const thumbsSlidesPerView = computed(() => {
 })
 
 const navigationOptions = computed(() => {
-  return images.value.length > 1
+  return processedImages.value.length > 1
     ? {
         nextEl: '.swiper-button-next',
         prevEl: '.swiper-button-prev',
       }
     : false
 })
-
-const images = computed(() => props.images.filter(Boolean))
 
 //=============================
 // HANDLERS
@@ -155,7 +176,6 @@ const updateThumbsDirection = () => {
 //=============================
 onMounted(() => {
   if (typeof window !== 'undefined') {
-    //Debounce to prevent continuously firing event
     window.addEventListener('resize', useDebounceFn(updateThumbsDirection, 250))
   }
 })
@@ -268,9 +288,6 @@ onUnmounted(() => {
   width: 100%;
   height: 400px;
   border-radius: var(--radius-small);
-  // box-shadow:
-  //   rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
-  //   rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 
   @include breakpoint(sm) {
     order: 2;
@@ -314,8 +331,6 @@ onUnmounted(() => {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    max-width: 100%;
-    max-height: 100%;
   }
 }
 
