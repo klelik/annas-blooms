@@ -57,6 +57,7 @@
         <div v-if="images.length > 1" class="swiper-button-next"></div>
       </swiper>
     </div>
+    <p>test</p>
   </div>
 </template>
 
