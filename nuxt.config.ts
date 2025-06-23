@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     'nuxt-graphql-client',
     '@pinia/nuxt',
+    'dayjs-nuxt',
   ],
   'graphql-client': {
     clients: {
@@ -118,6 +119,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       GQL_HOST: process.env.GQL_HOST,
+      POSTCODE_HOST: process.env.POSTCODE_HOST,
     },
   },
 })
