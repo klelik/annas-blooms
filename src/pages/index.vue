@@ -1,10 +1,10 @@
 <template>
   <div>
     <Masthead
-      video-src="//cdn2.editmysite.com/videos/landing-pages/global/home/masthead/masthead-720.mp4"
+      video-src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
       video-poster="//cdn2.editmysite.com/images/landing-pages/global/home/masthead/poster.jpg"
       align="left"
-      height=""
+      height="large"
     >
       <div class="flow">
         <h1>Celebrating life's moments with flowers</h1>
@@ -14,7 +14,7 @@
     </Masthead>
     <section class="content-section">
       <div class="container">
-        <p v-for="cat in productCategories">{{ cat?.name }}</p>
+        <!-- <p v-for="cat in productCategories">{{ cat?.name }}</p> -->
 
         <SectionHeader :alignment="'left'" class="mb-3">
           <template #tag>
@@ -48,7 +48,7 @@
             <!-- <Arrow class="arrow-cta-highlighted slim" /> -->
           </template>
         </SectionHeader>
-        <div class="container mt-4 featured-products-wrapper">
+        <div class="mt-4 grid grid-gap-2">
           <Card
             v-for="prod in productsValue"
             :key="prod?.id"
@@ -72,7 +72,6 @@
         </div>
       </div>
     </section>
-
     <section class="content-section">
       <div class="container">Cart: {{ cart.cart }}</div>
     </section>
