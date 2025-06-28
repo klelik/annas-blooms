@@ -66,11 +66,13 @@
               params: { slug: prod?.slug },
               target: '_self',
             }"
+            class="card"
             :product="prod"
           />
         </div>
       </div>
     </section>
+
     <section class="content-section">
       <div class="container">Cart: {{ cart.cart }}</div>
     </section>
@@ -78,52 +80,32 @@
 </template>
 
 <script setup lang="ts">
-import { appName, socialLinks } from '@/utils/constants.js'
-import { ProductsOrderByEnum } from '#woo'
-import type { ProductCategory, Image } from '../../types/index'
+import type { ProductCategory } from '../../types/index'
 import type { Product } from '~/types'
 import { useCartStore } from '~/stores/cart'
+import Card from '~/components/atoms/Card.vue'
+import { getImage } from '~/utils/helpers'
 
 const cart = useCartStore()
-const cachedProducts = ref<Product[] | null>(null)
+
 const { data: categories } = await useAsyncGql('getProductCategories', {
   first: 6,
 })
 const productCategories = (categories.value?.productCategories?.nodes || []) as ProductCategory[]
 
 const {
-  execute: fetchProducts,
   data: products,
-  loading,
   error,
-} = useAsyncGql('getProducts', { first: 8 }, { lazy: true })
-
-const productsValue = ref<Product[]>([])
-
-onMounted(async () => {
-  if (cachedProducts.value) {
-    console.log('Using cached products')
-    productsValue.value = cachedProducts.value
-  } else {
-    console.log('Fetching products from API')
-    await fetchProducts()
-    if (products.value) {
-      productsValue.value = products.value?.products?.nodes || []
-      // Cache the fetched data
-      cachedProducts.value = productsValue.value
-    }
-  }
-  console.log('Products Value:', productsValue.value)
+  loading,
+} = await useAsyncGql('getProducts', {
+  first: 8,
 })
 
-const getImage = (image: any): Image | null => {
-  if (!image) return null
-
-  return {
-    src: image?.producCardSourceUrl || image?.sourceUrl || '',
-    alt: image?.altText || image?.title || '',
-    width: 500,
-    height: 500,
+const productsValue = computed<Product[]>(() => {
+  if (error.value) {
+    console.error('Failed to fetch products:', error.value)
+    return []
   }
-}
+  return products.value?.products?.nodes || []
+})
 </script>
