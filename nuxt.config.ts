@@ -1,3 +1,5 @@
+import tailwindcss from '@tailwindcss/vite'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
@@ -6,7 +8,13 @@ export default defineNuxtConfig({
 
   components: ['@/components', '@/components/atoms', { path: '@/components/blocks', global: true }],
 
-  css: ['@/assets/scss/styles.scss'],
+  css: ['@/assets/css/tailwind.css', '@/assets/scss/styles.scss'],
+
+  vite: {
+    plugins: [
+      tailwindcss(),
+    ],
+  },
   modules: [
     '@vueuse/nuxt',
     '@nuxt/image',
@@ -16,7 +24,13 @@ export default defineNuxtConfig({
     'nuxt-graphql-client',
     '@pinia/nuxt',
     'dayjs-nuxt',
+    'shadcn-nuxt',
   ],
+
+  shadcn: {
+    prefix: 'Ui',
+    componentDir: './src/components/ui',
+  },
   'graphql-client': {
     clients: {
       default: {
@@ -61,10 +75,6 @@ export default defineNuxtConfig({
     once: false, // whether animation should happen only once - while scrolling down
     mirror: false, // whether elements should animate out while scrolling past them
     //anchorPlacement: "top-bottom", // defines which position of the element regarding to window should trigger the animation
-    // Adding console log when AOS initializes
-    init: () => {
-      console.log('AOS has been initialized')
-    },
   },
   app: {
     head: {
@@ -120,6 +130,21 @@ export default defineNuxtConfig({
     public: {
       GQL_HOST: process.env.GQL_HOST,
       POSTCODE_HOST: process.env.POSTCODE_HOST,
+    },
+  },
+
+  routeRules: {
+    // Homepage: serve stale while revalidating in background (60s TTL)
+    '/': { swr: 60 },
+    // Product pages: serve stale while revalidating (120s TTL)
+    '/product/**': { swr: 120 },
+  },
+
+  nitro: {
+    storage: {
+      cache: {
+        driver: 'memory',
+      },
     },
   },
 })
