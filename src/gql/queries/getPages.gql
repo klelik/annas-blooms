@@ -1,0 +1,22 @@
+query getPages($first: Int = 100) {
+  pages(first: $first, where: { status: PUBLISH }) {
+    nodes {
+      databaseId
+      title
+      slug
+      uri
+      date
+      modified
+      isFrontPage
+      template {
+        templateName
+      }
+      featuredImage {
+        node {
+          sourceUrl
+          altText
+        }
+      }
+    }
+  }
+}

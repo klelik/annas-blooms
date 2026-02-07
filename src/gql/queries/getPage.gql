@@ -1,0 +1,48 @@
+query getPage($uri: ID!) {
+  page(id: $uri, idType: URI) {
+    databaseId
+    title
+    slug
+    uri
+    content(format: RENDERED)
+    date
+    modified
+    status
+    isFrontPage
+    excerpt
+    featuredImage {
+      node {
+        sourceUrl
+        altText
+        title
+      }
+    }
+    seo {
+      title
+      metaDesc
+      canonical
+      opengraphTitle
+      opengraphDescription
+      opengraphImage {
+        sourceUrl
+      }
+    }
+    template {
+      templateName
+    }
+    parent {
+      node {
+        slug
+        uri
+      }
+    }
+    editorBlocks {
+      name
+      renderedHtml
+      innerBlocks {
+        name
+        renderedHtml
+      }
+    }
+  }
+}
