@@ -119,3 +119,21 @@ export interface UserInfo {
   password: string
   username: string
 }
+
+export interface ApiResponse<T = any> {
+  success: boolean
+  data?: T
+  error?: string
+}
+
+export interface AuthResponse {
+  authToken?: string
+  refreshToken?: string
+  sessionToken?: string
+}
+
+export interface GQLError {
+  message: string
+  locations?: Array<{ line: number; column: number }>
+  path?: string[]
+}

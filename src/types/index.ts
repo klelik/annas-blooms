@@ -34,8 +34,9 @@ export interface Link {
 }
 
 export interface Image {
-  src: string
-  alt: string
+  sourceUrl: string
+  altText: string
+  title?: string
   width?: number
   height?: number
   size?: number
@@ -61,11 +62,11 @@ export interface SectionHeader {
 
 export interface Card {
   image: Image
-  title: string
+  title?: string
   tags?: string[]
   description?: string
   link?: Link
-  onSale: boolean
+  onSale?: boolean
   regularPrice?: string
   salePrice?: string
   price?: string

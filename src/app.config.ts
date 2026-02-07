@@ -1,6 +1,11 @@
 export default defineAppConfig({
+  siteName: "Anna's Bloom",
+  shortDescription: 'Luxury flower arrangements delivered to your door',
+  description: 'Anna\'s Bloom — Luxury flower arrangements, bouquets, and gifts for every occasion.',
+  baseUrl: 'https://annasblooms.co.uk',
+  siteImage: '',
   storeSettings: {
-    autoOpenCart: false,
+    autoOpenCart: true,
     showReviews: true,
     showFilters: true,
     showOrderByDropdown: true,
@@ -9,6 +14,9 @@ export default defineAppConfig({
     showProductCategoriesOnSingleProduct: true,
     showBreadcrumbOnSingleProduct: true,
     showMoveToWishlist: true,
+    hideBillingAddressForVirtualProducts: false,
+    initStoreOnUserActionToReduceServerLoad: true,
+    saleBadge: 'percent' as 'percent' | 'onSale' | 'hidden',
   },
   currency: {
     symbol: '£',

@@ -7,12 +7,14 @@
 </template>
 
 <script setup lang="ts">
-const config = useRuntimeConfig()
 const cart = useCartStore()
+const route = useRoute()
 
-// Init cart
-onMounted(async () => {
-  await cart.initCart()
-  console.log('Cart initialized:', cart.cart)
-})
+// Close cart sidebar on route change (matches WooNuxt app.vue)
+watch(
+  () => route.path,
+  () => {
+    cart.toggleCart(false)
+  },
+)
 </script>

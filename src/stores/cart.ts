@@ -1,263 +1,203 @@
-// stores/cart.ts
+// stores/cart.ts — Exact WooNuxt useCart logic in Pinia store form
 import { defineStore } from 'pinia'
-import type {
-  AddToCartInput,
-  CartFragment as Cart,
-  PaymentGatewayFragment as PaymentGateway,
-  SimpleProductFragment as SimpleProduct,
-} from '#gql'
+import type { AddToCartInput } from '#gql'
 
-interface PaymentGateways {
-  nodes: PaymentGateway[]
-}
+export const useCartStore = defineStore('cart', () => {
+  const { storeSettings } = useAppConfig()
+  const { clearAllCookies, getErrorMessage } = useHelpers()
 
-interface CartState {
-  cart: Cart | null
-  isShowingCart: boolean
-  isUpdatingCart: boolean
-  isUpdatingCoupon: boolean
-  paymentGateways: PaymentGateways | null
-}
+  // State — matches WooNuxt useState declarations exactly
+  const cart = ref<any>(null)
+  const isShowingCart = ref(false)
+  const isUpdatingCart = ref(false)
+  const isUpdatingCoupon = ref(false)
+  const paymentGateways = ref<any>(null)
 
-export const useCartStore = defineStore('cart', {
-  state: (): CartState => ({
-    cart: null,
-    isShowingCart: false,
-    isUpdatingCart: false,
-    isUpdatingCoupon: false,
-    paymentGateways: null,
-  }),
+  // Getters
+  const cartItemsCount = computed(() => cart.value?.contents?.itemCount || 0)
+  const cartTotal = computed(() => cart.value?.total || '0')
 
-  getters: {
-    cartItemsCount: (state): number => {
-      return state.cart?.contents?.itemCount || 0
-    },
+  const allProductsAreVirtual = computed(() => {
+    const nodes = cart.value?.contents?.nodes || []
+    return nodes.length === 0
+      ? false
+      : nodes.every((node: any) => node.product?.node?.virtual === true)
+  })
 
-    cartTotal: (state): string => {
-      return state.cart?.total || '0'
-    },
+  const isBillingAddressEnabled = computed(() =>
+    storeSettings.hideBillingAddressForVirtualProducts ? !allProductsAreVirtual.value : true,
+  )
 
-    allProductsAreVirtual: (state): boolean => {
-      const nodes = state.cart?.contents?.nodes || []
-      return nodes.length === 0
-        ? false
-        : nodes.every((node) => (node.product?.node as SimpleProduct)?.virtual === true)
-    },
+  // Stop the loading spinner when the cart is updated (matches WooNuxt watch)
+  watch(cart, () => {
+    isUpdatingCart.value = false
+  })
 
-    isBillingAddressEnabled(): boolean {
+  // Actions — exact WooNuxt useCart functions
+
+  function resetInitialState() {
+    cart.value = null
+    paymentGateways.value = null
+  }
+
+  function updateCart(payload?: any): void {
+    cart.value = payload || null
+  }
+
+  function updatePaymentGateways(payload: any): void {
+    paymentGateways.value = payload
+  }
+
+  function toggleCart(state?: boolean): void {
+    isShowingCart.value = state ?? !isShowingCart.value
+  }
+
+  async function refreshCart(): Promise<boolean> {
+    try {
+      const { cart: cartData, customer, viewer, paymentGateways: pg, loginClients } =
+        await GqlGetCart()
+      const { updateCustomer, updateViewer, updateLoginClients } = useAuth()
+
+      if (cartData) updateCart(cartData)
+      if (customer) updateCustomer(customer)
+      if (viewer) updateViewer(viewer)
+      if (pg) updatePaymentGateways(pg)
+      if (loginClients) updateLoginClients(loginClients.filter((c: any) => c !== null))
+
+      return true
+    } catch (error: any) {
+      const errorMsg = getErrorMessage(error)
+      console.error('Error refreshing cart:', errorMsg)
+      clearAllCookies()
+      resetInitialState()
+      return false
+    } finally {
+      isUpdatingCart.value = false
+    }
+  }
+
+  async function addToCart(input: AddToCartInput): Promise<void> {
+    isUpdatingCart.value = true
+
+    try {
+      const { addToCart: result } = await GqlAddToCart({ input })
+      if (result?.cart) cart.value = result.cart
+
+      // Auto open cart (matches WooNuxt)
       const { storeSettings } = useAppConfig()
-      return storeSettings.hideBillingAddressForVirtualProducts ? !this.allProductsAreVirtual : true
-    },
-  },
+      if (storeSettings.autoOpenCart && !isShowingCart.value) toggleCart(true)
+    } catch (error: any) {
+      const errorMsg = getErrorMessage(error)
+      console.error('Error adding to cart:', errorMsg)
+    } finally {
+      isUpdatingCart.value = false
+    }
+  }
 
-  actions: {
-    handleSessionToken(customer: any) {
-      if (!customer) return
+  async function removeItem(key: string): Promise<void> {
+    isUpdatingCart.value = true
+    try {
+      const { updateItemQuantities } = await GqlUpDateCartQuantity({ key, quantity: 0 })
+      updateCart(updateItemQuantities?.cart)
+    } catch (error: any) {
+      const errorMsg = getErrorMessage(error)
+      console.error('Error removing item:', errorMsg)
+    } finally {
+      isUpdatingCart.value = false
+    }
+  }
 
-      const sessionToken = customer.sessionToken
-      if (sessionToken) {
-        console.log('Setting session token:', sessionToken)
+  async function updateItemQuantity(key: string, quantity: number): Promise<void> {
+    isUpdatingCart.value = true
+    try {
+      const { updateItemQuantities } = await GqlUpDateCartQuantity({ key, quantity })
+      updateCart(updateItemQuantities?.cart)
+    } catch (error: any) {
+      const errorMsg = getErrorMessage(error)
+      console.error('Error updating quantity:', errorMsg)
+    } finally {
+      isUpdatingCart.value = false
+    }
+  }
 
-        useGqlHeaders({ 'woocommerce-session': `Session ${sessionToken}` })
-
-        const sessionCookie = useCookie('woocommerce-session')
-        sessionCookie.value = sessionToken
+  async function emptyCart(): Promise<void> {
+    try {
+      isUpdatingCart.value = true
+      const { emptyCart: result } = await GqlEmptyCart()
+      updateCart(result?.cart)
+    } catch (error: any) {
+      const errorMsg = getErrorMessage(error)
+      if (errorMsg && !errorMsg.toLowerCase().includes('cart is empty')) {
+        console.error('Error emptying cart:', errorMsg)
       }
-    },
+    } finally {
+      isUpdatingCart.value = false
+    }
+  }
 
-    persistCart() {
-      if (import.meta.client) {
-        if (this.cart) {
-          localStorage.setItem('cart-state', JSON.stringify(this.cart))
-        } else {
-          localStorage.removeItem('cart-state')
-        }
-      }
-    },
+  async function updateShippingMethod(shippingMethods: string): Promise<void> {
+    isUpdatingCart.value = true
+    try {
+      const { updateShippingMethod: result } = await GqlChangeShippingMethod({ shippingMethods })
+      updateCart(result?.cart)
+    } catch (error: any) {
+      const errorMsg = getErrorMessage(error)
+      console.error('Error updating shipping method:', errorMsg)
+    } finally {
+      isUpdatingCart.value = false
+    }
+  }
 
-    restoreCart() {
-      if (import.meta.client) {
-        const stored = localStorage.getItem('cart-state')
-        if (stored) {
-          try {
-            this.cart = JSON.parse(stored)
-          } catch (e) {
-            console.error('Failed to parse cart state from localStorage', e)
-            localStorage.removeItem('cart-state')
-          }
-        }
-      }
-    },
+  async function applyCoupon(code: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      isUpdatingCoupon.value = true
+      const { applyCoupon: result } = await GqlApplyCoupon({ code })
+      updateCart(result?.cart)
+      return { success: true }
+    } catch (error: any) {
+      const errorMsg = getErrorMessage(error)
+      return { success: false, error: errorMsg || 'Failed to apply coupon' }
+    } finally {
+      isUpdatingCoupon.value = false
+    }
+  }
 
-    updateCart(payload?: Cart | null): void {
-      this.cart = payload || null
-      this.persistCart()
-      this.isUpdatingCart = false
-    },
+  async function removeCoupon(code: string): Promise<void> {
+    try {
+      isUpdatingCart.value = true
+      const { removeCoupons } = await GqlRemoveCoupons({ codes: [code] })
+      updateCart(removeCoupons?.cart)
+    } catch (error: any) {
+      const errorMsg = getErrorMessage(error)
+      console.error('Error removing coupon:', errorMsg)
+    } finally {
+      isUpdatingCart.value = false
+    }
+  }
 
-    updatePaymentGateways(payload: PaymentGateways): void {
-      this.paymentGateways = payload
-    },
-
-    toggleCart(state?: boolean): void {
-      this.isShowingCart = state ?? !this.isShowingCart
-    },
-
-    resetInitialState(): void {
-      this.cart = null
-      this.paymentGateways = null
-      // Clear localStorage when reset
-      if (import.meta.client) {
-        localStorage.removeItem('cart-state')
-      }
-    },
-
-    initCart() {
-      this.restoreCart()
-    },
-
-    async refreshCart(): Promise<boolean> {
-      // const { clearAllCookies } = useHelpers()
-      this.isUpdatingCart = true
-
-      try {
-        // Fetch cart
-        const { cart, customer, paymentGateways } = await GqlGetCart()
-
-        if (customer) {
-          this.handleSessionToken(customer)
-        }
-
-        if (cart) this.updateCart(cart)
-
-        if (paymentGateways) this.updatePaymentGateways(paymentGateways)
-
-        return true
-      } catch (error: any) {
-        console.error('Error refreshing cart:', error)
-
-        // clear everything if the cart is not found
-        if (error.message?.includes('Cart not found') || error.message?.includes('No cart')) {
-          // clearAllCookies()
-          this.resetInitialState()
-        }
-
-        return false
-      } finally {
-        this.isUpdatingCart = false
-      }
-    },
-
-    async addToCart(input: AddToCartInput): Promise<void> {
-      console.log('Adding to cart:', input)
-      this.isUpdatingCart = true
-
-      try {
-        const { addToCart } = await GqlAddToCart({ input })
-        if (addToCart?.cart) {
-          this.updateCart(addToCart.cart)
-
-          // First item might create the session, refresh
-          if (this.cartItemsCount === 1) {
-            await this.refreshCart()
-          }
-        }
-
-        // Auto open the cart
-        const { storeSettings } = useAppConfig()
-        if (storeSettings.autoOpenCart && !this.isShowingCart) {
-          this.toggleCart(true)
-        }
-      } catch (error: any) {
-        console.error('Error adding to cart:', error)
-        this.isUpdatingCart = false
-      }
-    },
-
-    async removeItem(key: string): Promise<void> {
-      this.isUpdatingCart = true
-
-      try {
-        const { updateItemQuantities } = await GqlUpDateCartQuantity({ key, quantity: 0 })
-        this.updateCart(updateItemQuantities?.cart)
-      } catch (error: any) {
-        console.error('Error removing item:', error)
-        this.isUpdatingCart = false
-      }
-    },
-
-    async updateItemQuantity(key: string, quantity: number): Promise<void> {
-      this.isUpdatingCart = true
-
-      try {
-        console.log('Updating item quantity:', { key, quantity })
-        const { updateItemQuantities } = await GqlUpDateCartQuantity({ key, quantity })
-        console.log('Update response:', updateItemQuantities)
-        this.updateCart(updateItemQuantities?.cart)
-      } catch (error: any) {
-        console.error('Error updating quantity:', error)
-        this.isUpdatingCart = false
-
-        // If session error, refresh cart
-        if (error.gqlErrors?.[0]?.message?.includes('Internal server error')) {
-          console.log('Internal server error, attempting to refresh cart...')
-          await this.refreshCart()
-        }
-      }
-    },
-
-    async emptyCart(): Promise<void> {
-      this.isUpdatingCart = true
-
-      try {
-        const { emptyCart } = await GqlEmptyCart()
-        this.updateCart(emptyCart?.cart)
-      } catch (error: any) {
-        console.error('Error emptying cart:', error)
-        this.isUpdatingCart = false
-      }
-    },
-
-    async updateShippingMethod(shippingMethods: string): Promise<void> {
-      this.isUpdatingCart = true
-
-      try {
-        const { updateShippingMethod } = await GqlChangeShippingMethod({ shippingMethods })
-        this.updateCart(updateShippingMethod?.cart)
-      } catch (error: any) {
-        console.error('Error updating shipping method:', error)
-        this.isUpdatingCart = false
-      }
-    },
-
-    async applyCoupon(code: string): Promise<{ message: string | null }> {
-      this.isUpdatingCoupon = true
-
-      try {
-        const { applyCoupon } = await GqlApplyCoupon({ code })
-        this.updateCart(applyCoupon?.cart)
-        return { message: null }
-      } catch (error: any) {
-        console.error('Error applying coupon:', error)
-        return { message: error.message || 'Failed to apply coupon' }
-      } finally {
-        this.isUpdatingCoupon = false
-      }
-    },
-
-    async removeCoupon(code: string): Promise<{ message: string | null }> {
-      this.isUpdatingCart = true
-
-      try {
-        const { removeCoupons } = await GqlRemoveCoupons({ codes: [code] })
-        this.updateCart(removeCoupons?.cart)
-        return { message: null }
-      } catch (error: any) {
-        console.error('Error removing coupon:', error)
-        return { message: error.message || 'Failed to remove coupon' }
-      } finally {
-        this.isUpdatingCart = false
-      }
-    },
-  },
+  return {
+    // State
+    cart,
+    isShowingCart,
+    isUpdatingCart,
+    isUpdatingCoupon,
+    paymentGateways,
+    // Getters
+    cartItemsCount,
+    cartTotal,
+    allProductsAreVirtual,
+    isBillingAddressEnabled,
+    // Actions
+    updateCart,
+    refreshCart,
+    toggleCart,
+    addToCart,
+    removeItem,
+    updateItemQuantity,
+    emptyCart,
+    updateShippingMethod,
+    applyCoupon,
+    removeCoupon,
+    resetInitialState,
+  }
 })
