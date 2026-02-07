@@ -14,8 +14,6 @@
     </Masthead>
     <section class="content-section">
       <div class="container">
-        <!-- <p v-for="cat in productCategories">{{ cat?.name }}</p> -->
-
         <SectionHeader :alignment="'left'" class="mb-3">
           <template #tag>
             <div
@@ -33,22 +31,23 @@
               Our Finest Collection
             </h2>
           </template>
-          <!-- <template #description> For lifelasting memories. </template> -->
           <template #link>
-            <!-- <NuxtLink
-              :to="{ name: 'product-category', params: { slug: 'about' } }"
-              class="link-cta"
-              data-aos="fade-up"
-              data-aos-delay="200"
-              data-aos-once="true"
-            >
-              Test
-            </NuxtLink> -->
             <button class="cta" secondary>See All Collection</button>
-            <!-- <Arrow class="arrow-cta-highlighted slim" /> -->
           </template>
         </SectionHeader>
         <div class="mt-4 grid grid-gap-2">
+          <!-- Skeleton cards while loading -->
+          <template v-if="pending && productsValue.length === 0">
+            <div v-for="n in 8" :key="n" class="card-skeleton">
+              <div class="card-skeleton__image" />
+              <div class="card-skeleton__body">
+                <div class="card-skeleton__line card-skeleton__line--medium" />
+                <div class="card-skeleton__line card-skeleton__line--short" />
+              </div>
+            </div>
+          </template>
+
+          <!-- Actual product cards -->
           <Card
             v-for="prod in productsValue"
             :key="prod?.id"
@@ -72,31 +71,15 @@
         </div>
       </div>
     </section>
-    <section class="content-section">
-      <div class="container">Cart: {{ cart.cart }}</div>
-    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { ProductCategory } from '../../types/index'
 import type { Product } from '~/types'
-import { useCartStore } from '~/stores/cart'
 import Card from '~/components/atoms/Card.vue'
 import { getImage } from '~/utils/helpers'
 
-const cart = useCartStore()
-
-const { data: categories } = await useAsyncGql('getProductCategories', {
-  first: 6,
-})
-const productCategories = (categories.value?.productCategories?.nodes || []) as ProductCategory[]
-
-const {
-  data: products,
-  error,
-  loading,
-} = await useAsyncGql('getProducts', {
+const { data: products, error, pending } = await useAsyncGql('getProducts', {
   first: 8,
 })
 

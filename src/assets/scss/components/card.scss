@@ -3,7 +3,6 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  // gap: var(--space-1);
 }
 
 .card-wrapper {
@@ -16,21 +15,27 @@
 .card {
   display: flex;
   flex-direction: column;
+  border-radius: var(--radius-default);
+  transition:
+    transform var(--duration-base) var(--ease-luxury),
+    box-shadow var(--duration-base) var(--ease-luxury);
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card-hover);
+  }
 
   &__head {
     position: relative;
-    border-radius: var(--radius-small);
-    background: linear-gradient(
-      181deg,
-      rgba(235, 228, 223, 0.4196078431) 0%,
-      rgba(235, 228, 223, 0.4196078431) 40%,
-      rgba(243, 241, 236, 0.0784313725) 100%
-    );
+    border-radius: var(--radius-default);
+    background: var(--c-surface);
+    overflow: hidden;
   }
+
   &__image {
     position: relative;
     height: 0;
-    padding-top: 56.25%;
+    padding-top: 120%;
     width: 100%;
 
     & img {
@@ -39,15 +44,17 @@
       position: absolute;
       top: 0;
       width: 100%;
-      object-fit: contain;
-      padding: var(--space-1);
+      object-fit: cover;
+      transition: transform 0.6s var(--ease-luxury);
     }
+  }
+
+  &:hover &__image img {
+    transform: scale(1.03);
   }
 }
 
 .card {
-  border-radius: 0.5rem;
-
   &__tag {
     --chip-bg: var(--main-color);
     --chip-padding: var(--space-05) var(--space-1);
@@ -61,34 +68,30 @@
   &__price {
     display: flex;
     flex-direction: column;
-    color: #4a3f3a;
+    color: var(--c-rich-brown);
 
     &--sale {
-      // font-size: var(--ts-body-large);
-      color: #d4556b;
+      color: var(--c-main-color);
+      font-weight: 500;
     }
     &--regular {
       text-decoration: line-through;
-      color: #8a7c75;
+      color: var(--c-grey);
       font-size: var(--ts-label);
     }
   }
 
   &__sale-badge {
-    // position: absolute;
-    // top: 0;
-    // left: 0;
-    padding: var(--space-05);
-    background-color: #d4556b;
-    color: var(--c-warm-white);
+    padding: 0.25rem 0.75rem;
+    background-color: var(--c-main-color);
+    color: var(--c-white);
     border-radius: var(--radius-pill);
     font-size: var(--ts-micro);
     width: fit-content;
     display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-weight: medium;
+    font-weight: 500;
     white-space: nowrap;
+    letter-spacing: 0.03em;
   }
 }
 
@@ -98,15 +101,11 @@
 
 .card .title {
   font-weight: 500;
-  color: var(--text-color);
-}
-
-.card::hover .card__body {
-  color: var(--c-popping-orange);
+  color: var(--heading-color);
+  font-family: var(--font-headline);
 }
 
 .card__body {
-  // font-size: var(--ts-tiny);
   margin-top: var(--space-1);
 }
 
@@ -117,11 +116,11 @@
   left: 0;
   bottom: 0;
   width: 100%;
-  height: 30%; /* Adjust this to control how much of the bottom */
-  background: linear-gradient(to top, rgba(255, 255, 255, 0.8), transparent);
+  height: 40%;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.6), transparent);
   z-index: 2;
   border-radius: inherit;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity var(--duration-base) var(--ease-luxury);
 }
 
 .card:hover .card-overlay::after {
@@ -133,11 +132,73 @@
   ============================= */
 .card[data-waiting] {
   transition:
-    opacity 0.5s calc(0.15s + (0.1s * var(--card-index, 0))) ease-out,
-    transform 0.45s calc(0.1s + (0.1s * var(--card-index, 0))) cubic-bezier(0.39, 0.57, 0.56, 1);
+    opacity var(--duration-slow) calc(0.15s + (0.1s * var(--card-index, 0))) ease-out,
+    transform 0.45s calc(0.1s + (0.1s * var(--card-index, 0))) var(--ease-luxury);
 }
 
 .card[data-waiting='true'] {
   opacity: 0;
   transform: translate3d(0, 0.75rem, 0);
+}
+
+/* ==========================
+  SKELETON CARD
+  ============================= */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.card-skeleton {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-default);
+
+  &__image {
+    position: relative;
+    height: 0;
+    padding-top: 120%;
+    width: 100%;
+    border-radius: var(--radius-default);
+    background: linear-gradient(
+      90deg,
+      var(--c-surface) 25%,
+      var(--c-surface-hover) 50%,
+      var(--c-surface) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s var(--ease-luxury) infinite;
+  }
+
+  &__body {
+    margin-top: var(--space-1);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__line {
+    height: 0.9rem;
+    border-radius: var(--radius-small);
+    background: linear-gradient(
+      90deg,
+      var(--c-surface) 25%,
+      var(--c-surface-hover) 50%,
+      var(--c-surface) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s var(--ease-luxury) infinite;
+
+    &--short {
+      width: 40%;
+    }
+
+    &--medium {
+      width: 65%;
+    }
+  }
 }

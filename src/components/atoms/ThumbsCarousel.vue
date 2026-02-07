@@ -78,7 +78,6 @@ import type { Image } from '~/types'
 // PROPS & EMITS
 //=============================
 interface Props {
-  x
   images: (string | Image)[]
   alt?: string
 }
@@ -171,18 +170,20 @@ const updateThumbsDirection = () => {
   }
 }
 
+const debouncedUpdateThumbsDirection = useDebounceFn(updateThumbsDirection, 250)
+
 //=============================
 // LIFECYCLE HOOKS
 //=============================
 onMounted(() => {
   if (typeof window !== 'undefined') {
-    window.addEventListener('resize', useDebounceFn(updateThumbsDirection, 250))
+    window.addEventListener('resize', debouncedUpdateThumbsDirection)
   }
 })
 
 onUnmounted(() => {
   if (typeof window !== 'undefined') {
-    window.removeEventListener('resize', updateThumbsDirection)
+    window.removeEventListener('resize', debouncedUpdateThumbsDirection)
   }
 })
 </script>
@@ -194,7 +195,7 @@ onUnmounted(() => {
   width: 100%;
   position: relative;
   overflow: hidden;
-  padding: var(--space-1);
+  // padding: var(--space-1);
 }
 
 .gallery-wrapper {
@@ -237,7 +238,7 @@ onUnmounted(() => {
     height: var(--space-6);
     opacity: 0.6;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all var(--duration-base) var(--ease-luxury);
     border: 2px solid transparent;
     border-radius: var(--radius-small);
     overflow: hidden;
@@ -342,8 +343,8 @@ onUnmounted(() => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+  transition: all var(--duration-base) var(--ease-luxury);
 
   &::after {
     font-size: 18px;

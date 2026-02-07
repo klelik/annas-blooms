@@ -1,15 +1,16 @@
 .footer {
-  border-radius: 1rem 0;
+  border-radius: var(--radius-default) 0;
 
   & h2 {
     color: var(--bg-color);
+    font-family: var(--font-headline);
   }
 
   &__content {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
+    padding: var(--space-2);
     height: 10rem;
   }
 }

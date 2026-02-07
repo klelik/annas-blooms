@@ -135,6 +135,22 @@ const isAccountActive = ref(false)
 
 const cartStore = useCartStore()
 
+// Computed property that checks if current route is a product page
+const isProductPage = computed(() => {
+  return route.path.includes('product')
+})
+
+// Function to update shrink state based on current page and scroll position
+const updateShrinkState = () => {
+  if (isProductPage.value) {
+    // On product pages, always keep header background (shrink = true)
+    shrink.value = true
+  } else {
+    // On other pages, base it on scroll position
+    shrink.value = y.value > 10
+  }
+}
+
 const toggleCart = () => {
   cartStore.toggleCart()
   if (cartStore.isShowingCart) {
@@ -142,7 +158,6 @@ const toggleCart = () => {
   }
 }
 
-//TODO: Implement Accounts
 const handleAccountClick = () => {
   isAccountActive.value = !isAccountActive.value
 }
@@ -176,12 +191,15 @@ const close = () => {
   isOpen.value = false
 }
 
+// Watch scroll position
 watch(y, (newValue, oldValue) => {
   if (isOpen.value) return
 
   let scrollDirection = ''
   scrollDirection = newValue > oldValue ? 'down' : 'up'
-  shrink.value = newValue > 10
+
+  // Update shrink state based on current page type
+  updateShrinkState()
 
   if (cartStore.isShowingCart) {
     hide.value = true
@@ -194,6 +212,7 @@ watch(y, (newValue, oldValue) => {
   }
 })
 
+// Watch route changes
 watch(
   () => route.path,
   () => {
@@ -201,8 +220,17 @@ watch(
     if (isOpen.value) {
       close()
     }
+    // Update shrink state when route changes
+    nextTick(() => {
+      updateShrinkState()
+    })
   }
 )
+
+// Set initial state on mount
+onMounted(() => {
+  updateShrinkState()
+})
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydownEvent)

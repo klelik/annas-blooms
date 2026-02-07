@@ -13,14 +13,14 @@
       </div>
     </div>
     <div class="card__body">
-      <div class="flow flow-gap-1">
+      <div class="flow flow-gap-05">
         <div class="flex" data-repel>
           <div class="flow flow-gap-05">
             <h3 v-if="title" class="card__title ts-heading-5 font-primary">{{ title }}</h3>
           </div>
           <div v-if="onSale" class="card__sale-badge">On Sale</div>
         </div>
-        <div v-if="hasValidPrice" :class="[{ 'flex flex-gap-1': onSale }]">
+        <div v-if="hasValidPrice" class="flex flex-gap-1">
           <div class="flex flex-gap-05">
             <span v-if="isPriceRange(onSale ? salePrice : price)" class="from-text">From </span>
             <span v-if="onSale" class="card__price--sale"> £{{ getMinimumPrice(salePrice) }} </span>
@@ -29,6 +29,8 @@
           <span v-if="onSale" class="card__price--regular">
             £{{ getMinimumPrice(regularPrice) }}
           </span>
+          <!-- TODO: HANDLE SELECTION AND PRICE CHANGE -->
+          <!-- TODO: HANDLE ERRORS IN CONSOLE (On SAle ... ) -->
 
           <span v-if="!onSale" class="card__price--current"> £{{ getMinimumPrice(price) }} </span>
         </div>
@@ -36,6 +38,7 @@
     </div>
   </NuxtLink>
 </template>
+
 <style scoped lang="scss"></style>
 
 <script setup lang="ts">
@@ -55,7 +58,6 @@ const createAddToCartInput = (): AddToCartInput => {
   }
 }
 
-// Handle add to cart with proper error handling
 const handleAddToCart = async () => {
   if (!props.product?.databaseId) {
     console.error('No product ID available')
@@ -65,10 +67,7 @@ const handleAddToCart = async () => {
   try {
     isAddingToCart.value = true
     const input = createAddToCartInput()
-    console.log('Add to Cart Input:', input)
-
     await cartStore.addToCart(input)
-    console.log('Successfully added to cart')
   } catch (error) {
     console.error('Failed to add to cart:', error)
   } finally {
@@ -92,7 +91,6 @@ const processedLink = computed(() => {
   return props.link
 })
 
-// Utility function to extract minimum price from price string
 const getMinimumPrice = (priceString: string | null | undefined): string | null => {
   if (!priceString) return null
 
@@ -117,5 +115,21 @@ const hasValidPrice = computed(() => {
     return getMinimumPrice(props.salePrice) !== null
   }
   return getMinimumPrice(props.price) !== null
+})
+
+const title = computed(() => {
+  if (props.title) return props.title
+
+  if (props.product?.name) return props.product.name
+
+  // If no title and product has variations, get the name before -
+  if (props.product?.variations?.nodes?.length > 0) {
+    const variationName = props.product.variations.nodes[0].name
+    const titleBeforeHyphen = variationName.split(' - ')[0].trim()
+    return titleBeforeHyphen
+  }
+
+  // Fallback to empty string
+  return ''
 })
 </script>

@@ -27,19 +27,17 @@
   font-size: var(--ts-label);
   text-transform: uppercase;
   color: var(--c-main-color);
-  font-weight: bold;
-  font-family: monospace;
-  letter-spacing: 1px;
-  // margin-bottom: var(--space-1);
+  font-weight: 600;
+  font-family: var(--font-primary);
+  letter-spacing: 0.08em;
 }
 
 .section-header__title {
-  font-weight: bold;
-  color: var(--headings-color);
+  font-family: var(--font-headline);
+  font-weight: 500;
+  color: var(--heading-color);
   font-size: var(--ts-heading-3);
   line-height: var(--lh-heading-3);
-  color: var(--text-color);
-  font-weight: 500;
 }
 
 .section-header__title-xl {

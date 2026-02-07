@@ -36,7 +36,7 @@ $tokens: (
   // fluid between 20 and 30px
   '2-5': getFluidSize(1.25rem, 3.125rem),
   // fluid between 20 and 50px
-  '5-8': getFluidSize(3.125rem, 5rem) // fluid between 50 and 80px,
+  '5-8': getFluidSize(3.125rem, 5rem), // fluid between 50 and 80px,
 );
 
 $vars: createCssVars($tokens, 'space');
@@ -53,6 +53,7 @@ Space utility classes
 @include tokensToUtils($tokens, $vars, 'm', 'margin');
 @include tokensToUtils($tokens, $vars, 'mi', 'margin-inline');
 @include tokensToUtils($tokens, $vars, 'mb', 'margin-block');
+@include tokensToUtils($tokens, $vars, 'mt', 'margin-top');
 
 // Padding
 @include tokensToUtils($tokens, $vars, 'p', 'padding');

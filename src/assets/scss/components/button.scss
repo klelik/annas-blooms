@@ -1,88 +1,108 @@
+// Reset all buttons and .cta to have no styling by default
 button,
 .cta {
-  --button-size: 'md';
-  --button-padding-block: calc(var(--space-1));
-  --button-padding-inline: var(--space-1);
-  --button-radius: var(--radius-default);
-  --button-bg: #c0797f;
-  --button-hover-bg: #a6656b;
-  --button-border: #c0797f;
-  --button-text: var(--c-white);
-
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
   text-decoration: none;
-  border-radius: var(--button-radius, var(--radius-pill));
+  cursor: pointer;
+  appearance: none;
+  outline: none;
 
-  &[size='none'] {
-    padding: 0 !important;
+  &:focus-visible {
+    outline: 2px solid var(--c-main-color);
+    outline-offset: 2px;
+  }
+}
+
+// Primary button
+button[primary]:not([disabled]),
+.cta[primary]:not([disabled]) {
+  cursor: pointer;
+  padding: var(--space-1) var(--space-2);
+  max-width: var(--button-max-width, 25rem);
+  position: relative;
+  text-align: center;
+  border: 1px solid var(--c-main-color);
+  font-weight: 500;
+  overflow: hidden;
+  appearance: none;
+  line-height: 1;
+  display: block;
+  border-radius: var(--radius-default);
+  background-color: var(--c-main-color);
+  transition: all var(--duration-base) var(--ease-luxury);
+  color: var(--c-white);
+  letter-spacing: 0.02em;
+
+  &:hover {
+    background-color: var(--c-main-color-dark);
+    border-color: var(--c-main-color-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(192, 121, 127, 0.25);
   }
 
   &[size='sm'] {
-    --button-padding-block: calc(var(--space-0-5));
-    --button-padding-inline: calc(var(--space-1));
+    padding: var(--space-05) var(--space-1);
     font-size: 0.875rem;
   }
 
   &[size='md'] {
-    --button-padding-block: calc(var(--space-2));
-    --button-padding-inline: calc(var(--space-2));
+    padding: var(--space-2);
     font-size: 1rem;
   }
 }
 
-button[primary]:not([disabled]),
-.cta[primary]:not([disabled]) {
-  cursor: pointer;
-  padding-block: var(--button-padding-block, calc(var(--space-1)));
-  padding-inline: var(--button-padding-inline, var(--space-1));
-  max-width: var(--button-max-width, 25rem);
-  position: relative;
-  text-align: center;
-  border: 1px solid;
-  font-weight: 500;
-  overflow: hidden;
-  appearance: none;
-  line-height: 1;
-  display: block;
-  border-color: var(--button-border, var(--c-main-color));
-  background-color: var(--button-bg, var(--c-main-color));
-  transition: all 0.3s;
-  color: var(--button-text);
-
-  &:hover {
-    background-color: var(--button-hover-bg, var(--c-main-color));
-    color: var(--button-hover-text, var(--bg-color));
-  }
-}
-
+// Secondary button
 button[secondary],
 .cta[secondary] {
   cursor: pointer;
-  padding-block: var(--button-padding-block, calc(var(--space-1)));
-  padding-inline: var(--button-padding-inline, var(--space-1));
+  padding: var(--space-1) var(--space-2);
   max-width: var(--button-max-width, 25rem);
   position: relative;
   text-align: center;
-  border: 1px solid;
+  border: 1px solid var(--c-main-color);
   font-weight: 500;
   overflow: hidden;
   appearance: none;
   line-height: 1;
   display: block;
-  border-color: var(--button-border, var(--c-main-color));
+  border-radius: var(--radius-default);
   background-color: transparent;
-  transition: all 0.3s;
-  color: var(--button-border, var(--c-main-color));
+  transition: all var(--duration-base) var(--ease-luxury);
+  color: var(--c-main-color);
+  letter-spacing: 0.02em;
 
   &:hover {
-    background-color: var(--button-hover-bg, var(--c-main-color));
-    color: var(--button-text, var(--bg-color));
+    background-color: var(--c-main-color);
+    color: var(--c-white);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(192, 121, 127, 0.2);
+  }
+
+  &[size='sm'] {
+    padding: var(--space-05) var(--space-1);
+    font-size: 0.875rem;
+  }
+
+  &[size='md'] {
+    padding: var(--space-2);
+    font-size: 1rem;
   }
 }
 
+// Primary no-hover variant
 button[primary-no-hover],
 .cta[primary-no-hover] {
-  background-color: var(--button-bg, var(--c-main-color));
-  color: var(--button-text, var(--bg-color));
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--c-main-color);
+  border-radius: var(--radius-default);
+  background-color: var(--c-main-color);
+  color: var(--c-white);
+  font-weight: 500;
   width: auto;
 }
 
@@ -97,9 +117,55 @@ button[primary-no-hover],
   font-size: var(--chip-text-size, var(--ts-body));
   line-height: var(--chip-line-height, var(--lh-body));
   padding: var(--chip-padding, var(--space-1));
-  font-weight: var(var(--chip-text-weight)), 700;
-  // border: 3px solid var(--c-main-color);
-  // &:hover{
-  //     padding: var(--space-2);
-  // }
+  font-weight: 500;
+  display: inline-block;
+}
+
+.cta--success {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-small);
+  background-color: var(--c-info);
+  color: var(--c-white);
+  font-weight: 500;
+  border: none;
+}
+
+.cta--underline {
+  text-decoration: underline;
+  color: var(--c-main-color);
+  font-weight: 500;
+  font-size: var(--ts-body);
+  line-height: var(--lh-body);
+  padding: var(--space-1);
+  border-radius: var(--radius-small);
+  transition: all var(--duration-base) var(--ease-luxury);
+
+  &--success {
+    color: var(--c-info);
+    &:hover {
+      background-color: rgba(192, 121, 127, 0.06);
+    }
+  }
+  &--error {
+    color: var(--c-error);
+    &:hover {
+      background-color: rgba(192, 121, 127, 0.06);
+    }
+  }
+}
+
+.btn-reset {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  appearance: none;
+  outline: none;
+}
+
+.decision-buttons {
 }

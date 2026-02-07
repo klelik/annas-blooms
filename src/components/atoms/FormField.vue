@@ -214,17 +214,17 @@ const handleFocus = () => {
 
 .form-input {
   width: 100%;
-  padding: 0.5rem 1rem;
+  padding: 0.625rem 1rem;
   border: 1px solid var(--c-grey-light);
   border-radius: var(--radius-small);
   font-size: var(--ts-body);
-  transition: all 0.2s;
+  transition: border-color var(--duration-fast, 200ms) ease;
   background-color: var(--c-white);
 }
 
 .form-input:focus {
   outline: none;
-  border-color: var(--c-grey);
+  border-color: var(--c-main-color);
 }
 
 .form-input:disabled {
@@ -249,7 +249,8 @@ const handleFocus = () => {
 
 .radio-group {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: var(--space-1, 0.5rem);
   max-width: 15rem;
 }
@@ -257,7 +258,7 @@ const handleFocus = () => {
 .radio-option {
   border: 2px solid var(--c-grey-light);
   border-radius: var(--radius-small);
-  transition: all 0.2s ease;
+  transition: all var(--duration-fast, 200ms) ease;
 
   &:hover {
     border-color: var(--c-main-color, var(--c-grey));

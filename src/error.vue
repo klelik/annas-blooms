@@ -13,7 +13,7 @@
         <template #title>
           <!-- {{ error?.statusCode }} <br />
           {{ error?.statusMessage }} -->
-          shit happens! <br />
+          Something went wrong <br />
         </template>
       </Masthead>
     </template>
@@ -22,5 +22,4 @@
 
 <script setup lang="ts">
 const error = useError();
-console.log('error', error.value);
 </script>
