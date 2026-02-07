@@ -20,6 +20,7 @@ query getProduct($slug: ID!) {
     ...SimpleProduct
     ...VariableProduct
     ...ExternalProduct
+
     related(first: 5) {
       nodes {
         ...SimpleProduct
@@ -27,6 +28,41 @@ query getProduct($slug: ID!) {
         ...ExternalProduct
       }
     }
+
+    ... on SimpleProduct {
+      upsell(first: 10) {
+        nodes {
+          ...SimpleProduct
+          ...VariableProduct
+          ...ExternalProduct
+        }
+      }
+      crossSell(first: 10) {
+        nodes {
+          ...SimpleProduct
+          ...VariableProduct
+          ...ExternalProduct
+        }
+      }
+    }
+
+    ... on VariableProduct {
+      upsell(first: 10) {
+        nodes {
+          ...SimpleProduct
+          ...VariableProduct
+          ...ExternalProduct
+        }
+      }
+      crossSell(first: 10) {
+        nodes {
+          ...SimpleProduct
+          ...VariableProduct
+          ...ExternalProduct
+        }
+      }
+    }
+
     reviews {
       averageRating
       edges {
@@ -38,7 +74,6 @@ query getProduct($slug: ID!) {
     }
   }
 }
-
 fragment ProductWithAttributes on ProductWithAttributes {
   attributes {
     nodes {
@@ -46,7 +81,6 @@ fragment ProductWithAttributes on ProductWithAttributes {
     }
   }
 }
-
 fragment ProductAttribute on ProductAttribute {
   variation
   name
@@ -55,26 +89,12 @@ fragment ProductAttribute on ProductAttribute {
   label
   scope
   ... on GlobalProductAttribute {
-    terms {
+    terms(where: { orderby: MENU_ORDER, order: ASC }) {
       nodes {
         name
         slug
         taxonomyName
         databaseId
-      }
-    }
-  }
-}
-
-fragment Comment on Comment {
-  content
-  id
-  date
-  author {
-    node {
-      name
-      avatar {
-        url
       }
     }
   }

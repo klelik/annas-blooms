@@ -1,0 +1,34 @@
+query getMessageCards {
+  products(where: { category: "message-cards" }, first: 100) {
+    nodes {
+      databaseId
+      name
+      slug
+      date
+      image {
+        sourceUrl
+        altText
+      }
+      ... on SimpleProduct {
+        price
+        regularPrice
+        cardOccasionLinks {
+          occasionsAndDetails {
+            nodes {
+              ... on Occasion {
+                id
+                title
+                featuredImage {
+                  node {
+                    sourceUrl
+                    altText
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

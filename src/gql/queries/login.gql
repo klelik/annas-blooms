@@ -1,0 +1,27 @@
+mutation login($username: String!, $password: String!) {
+  login(
+    input: {
+      provider: PASSWORD
+      credentials: {
+        username: $username
+        password: $password
+      }
+    }
+  ) {
+    authToken
+    authTokenExpiration
+    refreshToken
+    refreshTokenExpiration
+    user {
+      name
+      username
+    }
+    sessionToken
+    customer {
+      databaseId
+      username
+      firstName
+      lastName
+    }
+  }
+}

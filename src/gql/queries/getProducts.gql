@@ -9,6 +9,7 @@ query getProducts(
     after: $after
     where: {
       categoryIn: $slug
+      categoryNotIn: ["message-cards"]
       typeNotIn: EXTERNAL
       visibility: VISIBLE
       minPrice: 0
@@ -51,27 +52,9 @@ query getProducts(
         salePrice
         regularPrice
         averageRating
-        variations(first: 100) {
+        variations(first: 1) {
           nodes {
             name
-            databaseId
-            price
-            regularPrice
-            salePrice
-            slug
-            stockQuantity
-            stockStatus
-            hasAttributes
-            image {
-              ...Image
-              cartSourceUrl: sourceUrl(size: THUMBNAIL)
-              producCardSourceUrl: sourceUrl(size: WOOCOMMERCE_THUMBNAIL)
-            }
-            attributes {
-              nodes {
-                ...VariationAttribute
-              }
-            }
           }
         }
       }
@@ -87,11 +70,4 @@ query getProducts(
       }
     }
   }
-}
-
-fragment VariationAttribute on VariationAttribute {
-  name
-  attributeId
-  value
-  label
 }
