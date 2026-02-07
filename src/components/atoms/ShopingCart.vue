@@ -1,186 +1,128 @@
 <template>
-  <div class="cart-sidebar" :class="{ 'cart-sidebar--open': cartStore.isShowingCart }">
-    <div class="cart-sidebar__panel">
-      <div class="cart-sidebar__header">
-        <h2 class="cart-sidebar__title">Cart</h2>
-        <button
-          class="cart-sidebar__close"
-          @click="cartStore.toggleCart(false)"
-          aria-label="Close cart"
-          size="none"
+  <UiSheet :open="cartStore.isShowingCart" @update:open="cartStore.toggleCart($event)">
+    <UiSheetContent side="right" class="flex flex-col p-0 sm:max-w-md">
+      <!-- Header -->
+      <UiSheetHeader class="border-b border-border px-6 py-4">
+        <UiSheetTitle class="text-lg font-semibold">Cart</UiSheetTitle>
+      </UiSheetHeader>
+
+      <!-- Content -->
+      <div
+        class="flex-1 overflow-y-auto overscroll-contain"
+        :class="{ 'pointer-events-none opacity-60 transition-opacity duration-200': cartStore.isUpdatingCart }"
+      >
+        <!-- Empty Cart -->
+        <div
+          v-if="!cartStore.isUpdatingCart && cartStore.cartItemsCount === 0"
+          class="flex flex-col items-center justify-center gap-3 px-6 py-16 text-center text-muted-foreground"
         >
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="size-16 text-muted-foreground/50"
+            width="22"
+            height="23"
+            viewBox="0 0 22 23"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
-              d="M18 6L6 18M6 6L18 18"
+              d="M17.9437 6.6875H4.05622C3.88705 6.68829 3.72396 6.75067 3.59744 6.86296C3.47091 6.97525 3.3896 7.12978 3.36872 7.29766L2.14841 18.2977C2.13756 18.3935 2.14699 18.4906 2.1761 18.5825C2.20521 18.6745 2.25335 18.7593 2.31738 18.8314C2.38141 18.9035 2.4599 18.9614 2.54776 19.0012C2.63561 19.041 2.73086 19.0619 2.82732 19.0625H19.1726C19.2691 19.0619 19.3643 19.041 19.4522 19.0012C19.54 18.9614 19.6185 18.9035 19.6826 18.8314C19.7466 18.7593 19.7947 18.6745 19.8238 18.5825C19.853 18.4906 19.8624 18.3935 19.8515 18.2977L18.6312 7.29766C18.6103 7.12978 18.529 6.97525 18.4025 6.86296C18.276 6.75067 18.1129 6.68829 17.9437 6.6875Z"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M6.875 6C6.875 4.90598 7.3096 3.85677 8.08318 3.08318C8.85677 2.3096 9.90598 1.875 11 1.875C12.094 1.875 13.1432 2.3096 13.9168 3.08318C14.6904 3.85677 15.125 4.90598 15.125 6"
+              stroke="currentColor"
+              stroke-width="1.5"
               stroke-linecap="round"
               stroke-linejoin="round"
             />
           </svg>
-        </button>
-      </div>
-
-      <div class="cart-sidebar__content">
-        <!-- Loading State -->
-        <div v-if="cartStore.isUpdatingCart" class="cart-sidebar__loading">
-          <div class="cart-sidebar__spinner"></div>
-          <p>Updating cart...</p>
-        </div>
-
-        <!-- Empty Cart -->
-        <div v-else-if="cartStore.cartItemsCount === 0" class="cart-sidebar__empty">
-          <div class="cart-sidebar__empty-icon">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M3 3H5L5.4 5M7 13H17L21 5H5.4M7 13L5.4 5M7 13L4.7 15.3C4.3 15.7 4.6 16.5 5.1 16.5H17M17 13V16.5M9 19.5C9.8 19.5 10.5 20.2 10.5 21S9.8 22.5 9 22.5 7.5 21.8 7.5 21 8.2 19.5 9 19.5ZM20 19.5C20.8 19.5 21.5 20.2 21.5 21S20.8 22.5 20 22.5 18.5 21.8 18.5 21 19.2 19.5 20 19.5Z"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </div>
-          <h3>Your cart is empty</h3>
-          <p>Add some beautiful flowers to get started</p>
-          <button class="cart-sidebar__continue-btn" @click="cartStore.toggleCart(false)">
+          <h3 class="text-lg font-semibold text-foreground">Your cart is empty</h3>
+          <p class="text-sm leading-relaxed">Add some beautiful flowers to get started</p>
+          <UiButton class="mt-4" @click="cartStore.toggleCart(false)">
             Continue Shopping
-          </button>
+          </UiButton>
         </div>
 
         <!-- Items -->
-        <div v-else class="cart-sidebar__items flow">
-          <div v-for="item in cartItems" :key="item.key" class="cart-item">
-            <div class="cart-item__image">
-              <img
-                v-if="item.product?.node.image?.sourceUrl"
-                :src="item.product?.node.image?.sourceUrl"
-                :alt="item.product?.node.image?.altText"
-              />
-              <div v-else class="cart-item__image-placeholder"></div>
-            </div>
-
-            <div class="cart-item__details">
-              <div class="flow flow-gap-05">
-                <p class="cart-item__name">{{ item.product?.node.name }}</p>
-                <p class="cart-item__description">
-                  {{
-                    item.product?.node.shortDescription != ''
-                      ? item.product?.node.shortDescription
-                      : 'Short descripion'
-                  }}
-                </p>
-              </div>
-              <div class="cart-item__price">
-                <template v-if="item.product?.node?.salePrice">
-                  <span class="cart-item__sale-price">
-                    {{ item.product?.node?.salePrice }}
-                  </span>
-                  <span class="cart-item__regular-price">
-                    {{ item.product?.node?.regularPrice }}
-                  </span>
-                </template>
-
-                <!-- Not on Sale: Show regular price -->
-                <span v-else class="cart-item__current-price">
-                  {{ item.product?.node?.price }}
-                </span>
-              </div>
-            </div>
-
-            <div class="cart-item__quantity">
-              <button
-                v-if="item.quantity == 1"
-                class="cart-item__remove"
-                @click="removeItem(item.key)"
-                aria-label="Remove item"
-              >
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M3 6H5H21M8 6V4C8 3.4 8.4 3 9 3H15C15.6 3 16 3.4 16 4V6M19 6V20C19 20.6 18.6 21 18 21H6C5.4 21 5 20.6 5 20V6H19Z"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </button>
-              <button
-                v-else
-                class="cart-item__quantity-btn"
-                @click="updateQuantity(item.key, item.quantity - 1)"
-                :disabled="item.quantity <= 1"
-              >
-                -
-              </button>
-              <span class="cart-item__quantity-value">{{ item.quantity }}</span>
-              <button
-                class="cart-item__quantity-btn"
-                @click="updateQuantity(item.key, item.quantity + 1)"
-              >
-                +
-              </button>
-            </div>
-          </div>
+        <div v-else class="divide-y divide-border">
+          <CartItem
+            v-for="item in cartItems"
+            :key="item.key"
+            :item="item"
+            :is-small="true"
+            @update="updateQuantity"
+          />
         </div>
       </div>
 
       <!-- Footer -->
-      <div v-if="cartStore.cartItemsCount > 0" class="cart-sidebar__footer">
-        <div class="cart-sidebar__summary">
-          <div v-if="!showOnlyTotal" class="cart-sidebar__summary-row">
-            <span>Subtotal ({{ cartStore.cartItemsCount }} items)</span>
-            <span class="cart-sidebar__summary-price">{{ cartStore.cart?.subtotal }}</span>
+      <UiSheetFooter v-if="cartStore.cartItemsCount > 0" class="mt-auto border-t border-border px-6 py-4 sm:flex-col">
+        <div class="w-full space-y-3">
+          <!-- Summary -->
+          <div class="space-y-1.5 text-sm">
+            <div v-if="!showOnlyTotal" class="flex items-center justify-between text-muted-foreground">
+              <span>Subtotal ({{ cartStore.cartItemsCount }} items)</span>
+              <span class="font-medium">{{ cartStore.cart?.subtotal }}</span>
+            </div>
+
+            <div
+              v-if="getRawPrice(cartStore.cart?.shippingTotal) > 0"
+              class="flex items-center justify-between text-muted-foreground"
+            >
+              <span>Shipping</span>
+              <span class="font-medium">{{ cartStore.cart?.shippingTotal || '£0.00' }}</span>
+            </div>
+
+            <div
+              v-if="getRawPrice(cartStore.cart?.totalTax) > 0"
+              class="flex items-center justify-between text-muted-foreground"
+            >
+              <span>Tax</span>
+              <span class="font-medium">{{ cartStore.cart?.totalTax }}</span>
+            </div>
+
+            <div
+              v-if="getRawPrice(cartStore.cart?.discountTotal) > 0"
+              class="flex items-center justify-between text-muted-foreground"
+            >
+              <span>Discount</span>
+              <span class="font-medium">-{{ cartStore.cart?.discountTotal }}</span>
+            </div>
+
+            <UiSeparator class="my-2" />
+
+            <div class="flex items-center justify-between text-base font-semibold text-foreground">
+              <span>Total</span>
+              <span>{{ cartStore.cart?.total || '£0.00' }}</span>
+            </div>
           </div>
 
-          <div
-            v-if="getRawPrice(cartStore.cart?.shippingTotal) > 0"
-            class="cart-sidebar__summary-row"
-          >
-            <span>Shipping</span>
-            <span class="cart-sidebar__summary-price">{{
-              cartStore.cart?.shippingTotal || '£0.00'
-            }}</span>
-          </div>
-
-          <div v-if="getRawPrice(cartStore.cart?.totalTax) > 0" class="cart-sidebar__summary-row">
-            <span>Tax</span>
-            <span class="cart-sidebar__summary-price">{{ cartStore.cart?.totalTax }}</span>
-          </div>
-
-          <div
-            v-if="getRawPrice(cartStore.cart?.discountTotal) > 0"
-            class="cart-sidebar__summary-row"
-          >
-            <span>Discount</span>
-            <span class="cart-sidebar__summary-price"> -{{ cartStore.cart?.discountTotal }} </span>
-          </div>
-
-          <div class="cart-sidebar__summary-row cart-sidebar__summary-row--total">
-            <span>Total</span>
-            <span class="cart-sidebar__summary-price--total">
-              {{ cartStore.cart?.total || '£0.00' }}
-            </span>
+          <!-- Actions -->
+          <div class="flex gap-2">
+            <UiButton variant="outline" class="flex-1" @click="cartStore.toggleCart(false)">
+              Continue Shopping
+            </UiButton>
+            <UiButton class="flex-1" @click="checkout">
+              Checkout
+            </UiButton>
           </div>
         </div>
-
-        <div class="cart-sidebar__actions">
-          <button class="" secondary @click="viewCart">View Cart</button>
-          <button class="" primary @click="checkout">Checkout</button>
-        </div>
-      </div>
-    </div>
-  </div>
+      </UiSheetFooter>
+    </UiSheetContent>
+  </UiSheet>
 </template>
 
 <script setup lang="ts">
 import { getRawPrice } from '~/utils/helpers'
+
 const cartStore = useCartStore()
 
 const cartItems = computed(() => {
   return cartStore.cart?.contents?.nodes || []
 })
-console.log('Cart Items:', cartItems.value)
 
 const showOnlyTotal = computed(() => {
   return (
@@ -192,22 +134,11 @@ const showOnlyTotal = computed(() => {
 })
 
 const updateQuantity = async (key: string, quantity: number) => {
-  console.log('Updating quantity:', key, quantity)
   if (quantity <= 0) {
-    await removeItem(key)
+    await cartStore.removeItem(key)
   } else {
-    // await cartStore.emptyCart()
     await cartStore.updateItemQuantity(key, quantity)
   }
-}
-
-const removeItem = async (key: string) => {
-  await cartStore.removeItem(key)
-}
-
-const viewCart = () => {
-  cartStore.toggleCart(false)
-  navigateTo('/cart')
 }
 
 const checkout = () => {
