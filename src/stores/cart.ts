@@ -68,7 +68,14 @@ export const useCartStore = defineStore('cart', () => {
     } catch (error: any) {
       const errorMsg = getErrorMessage(error)
       console.error('Error refreshing cart:', errorMsg)
-      clearAllCookies()
+
+      // Only clear cookies on authentication/session errors, not transient network failures
+      const authErrors = ['Invalid session token', 'The iss do not match', 'expired token', 'invalid-secret-key']
+      const isAuthError = authErrors.some((msg) => errorMsg?.toLowerCase().includes(msg.toLowerCase()))
+      if (isAuthError) {
+        clearAllCookies()
+      }
+
       resetInitialState()
       return false
     } finally {
@@ -98,7 +105,9 @@ export const useCartStore = defineStore('cart', () => {
     isUpdatingCart.value = true
     try {
       const { updateItemQuantities } = await GqlUpDateCartQuantity({ key, quantity: 0 })
-      updateCart(updateItemQuantities?.cart)
+      if (updateItemQuantities?.cart) {
+        updateCart(updateItemQuantities.cart)
+      }
     } catch (error: any) {
       const errorMsg = getErrorMessage(error)
       console.error('Error removing item:', errorMsg)
@@ -111,7 +120,9 @@ export const useCartStore = defineStore('cart', () => {
     isUpdatingCart.value = true
     try {
       const { updateItemQuantities } = await GqlUpDateCartQuantity({ key, quantity })
-      updateCart(updateItemQuantities?.cart)
+      if (updateItemQuantities?.cart) {
+        updateCart(updateItemQuantities.cart)
+      }
     } catch (error: any) {
       const errorMsg = getErrorMessage(error)
       console.error('Error updating quantity:', errorMsg)
@@ -149,10 +160,15 @@ export const useCartStore = defineStore('cart', () => {
   }
 
   async function applyCoupon(code: string): Promise<{ success: boolean; error?: string }> {
+    if (!code || !code.trim()) {
+      return { success: false, error: 'Please enter a coupon code' }
+    }
     try {
       isUpdatingCoupon.value = true
-      const { applyCoupon: result } = await GqlApplyCoupon({ code })
-      updateCart(result?.cart)
+      const { applyCoupon: result } = await GqlApplyCoupon({ code: code.trim() })
+      if (result?.cart) {
+        updateCart(result.cart)
+      }
       return { success: true }
     } catch (error: any) {
       const errorMsg = getErrorMessage(error)

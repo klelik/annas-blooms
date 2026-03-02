@@ -15,7 +15,7 @@ fragment OrderFragment on Order {
   paymentMethodTitle
   paymentMethod
   customer {
-    email
+    ...Customer
     downloadableItems(first: 100) {
       nodes {
         ...DownloadableItem
@@ -31,8 +31,5 @@ fragment OrderFragment on Order {
     nodes {
       ...LineItem
     }
-  }
-  customer {
-    ...Customer
   }
 }

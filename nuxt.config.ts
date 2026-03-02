@@ -141,10 +141,6 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    storage: {
-      cache: {
-        driver: 'memory',
-      },
-    },
+    preset: 'cloudflare-pages',
   },
 })

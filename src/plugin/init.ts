@@ -77,7 +77,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       isDev || isPathThatRequiresInit || !storeSettings.initStoreOnUserActionToReduceServerLoad
 
     if (shouldInit) {
-      initStore()
+      initStore().catch((err) => console.error('Failed to initialize store:', err))
     } else {
       eventsToFireOn.forEach((event) => {
         window.addEventListener(event, initStore, { once: true })

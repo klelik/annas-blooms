@@ -35,12 +35,6 @@ fragment VariableProduct on VariableProduct {
   variations(first: 100) {
     nodes {
       ...ProductVariation
-      linkedProduct {
-        id
-        databaseId
-        name
-        slug
-      }
     }
   }
   galleryImages(first: 20) {

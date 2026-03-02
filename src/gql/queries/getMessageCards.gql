@@ -12,22 +12,6 @@ query getMessageCards {
       ... on SimpleProduct {
         price
         regularPrice
-        cardOccasionLinks {
-          occasionsAndDetails {
-            nodes {
-              ... on Occasion {
-                id
-                title
-                featuredImage {
-                  node {
-                    sourceUrl
-                    altText
-                  }
-                }
-              }
-            }
-          }
-        }
       }
     }
   }
